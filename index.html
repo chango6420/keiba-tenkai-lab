@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>競馬展開ラボ v0.9.1</title>
+<title>競馬展開ラボ v0.9.2</title>
 
 <style>
 *{box-sizing:border-box}
@@ -238,15 +238,13 @@ button:disabled{
   cursor:pointer;
 }
 
-.debug{
-  margin-top:7px;
+.debug-info{
+  margin-top:8px;
   padding:7px;
-  background:#101318;
-  border:1px solid #292e38;
   border-radius:6px;
-  color:#737c8b;
+  background:#13171e;
+  color:#788190;
   font-size:10px;
-  line-height:1.5;
 }
 </style>
 </head>
@@ -255,10 +253,12 @@ button:disabled{
 
 <header>
 <h1>競馬展開ラボ</h1>
-<span class="badge">v0.9.1 過去走着順修正版</span>
+<span class="badge">v0.9.2 過去走データ取得改善版</span>
 </header>
 
 <div class="container">
+
+<!-- レース設定 -->
 
 <div class="card">
 
@@ -321,6 +321,8 @@ button:disabled{
 </div>
 
 
+<!-- レース選択 -->
+
 <div class="card">
 
 <h2>レース選択</h2>
@@ -334,6 +336,8 @@ button:disabled{
 </div>
 
 
+<!-- 状況 -->
+
 <div class="card">
 
 <h2>取得状況</h2>
@@ -344,6 +348,8 @@ JavaScript OK
 
 </div>
 
+
+<!-- 出馬表 -->
 
 <div class="card">
 
@@ -363,6 +369,8 @@ JavaScript OK
 
 </div>
 
+
+<!-- 脚質解析 -->
 
 <div class="card">
 
@@ -384,7 +392,7 @@ JavaScript OK
 <script>
 
 /* =====================================================
-   競馬展開ラボ v0.9.1
+   競馬展開ラボ v0.9.2
 ===================================================== */
 
 let horses = [];
@@ -948,7 +956,434 @@ button.textContent=
 
 
 /* =====================================================
-   過去走解析 v0.9.1
+   過去走テーブルのヘッダー解析
+===================================================== */
+
+/*
+v0.9.2の重要部分。
+
+以前は、
+
+「1～18の整数なら着順」
+「1000～4000の整数なら距離」
+
+という推測をしていたため、
+
+2025
+2026
+タイムの数字
+その他の数字
+
+を誤って拾う可能性があった。
+
+今回は表のヘッダーから、
+
+着順
+距離
+通過
+日付
+
+の列位置を先に特定し、
+その列だけを見る。
+*/
+
+function detectPastRaceHeader(cells){
+
+const map={};
+
+cells.forEach(
+function(cell,index){
+
+const h =
+normalizeHeader(cell);
+
+if(!h){
+return;
+}
+
+
+/* 着順 */
+
+if(
+h==="着順" ||
+h.includes("着順")
+){
+
+if(map.finish===undefined){
+
+map.finish=index;
+
+}
+
+}
+
+
+/* 通過 */
+
+if(
+h==="通過" ||
+h.includes("通過")
+){
+
+if(map.position===undefined){
+
+map.position=index;
+
+}
+
+}
+
+
+/* 距離 */
+
+if(
+h==="距離" ||
+h.includes("距離")
+){
+
+if(map.distance===undefined){
+
+map.distance=index;
+
+}
+
+}
+
+
+/* 日付 */
+
+if(
+h==="日付" ||
+h.includes("日付")
+){
+
+if(map.date===undefined){
+
+map.date=index;
+
+}
+
+}
+
+});
+
+return map;
+
+}
+
+
+/* =====================================================
+   ヘッダー正規化
+===================================================== */
+
+function normalizeHeader(value){
+
+return clean(value)
+.replace(
+/[\s　]/g,
+""
+)
+.replace(
+/（.*?）/g,
+""
+)
+.replace(
+/\(.*?\)/g,
+""
+)
+.trim();
+
+}
+
+
+/* =====================================================
+   着順解析
+===================================================== */
+
+function parseFinish(value){
+
+const text =
+clean(value);
+
+if(!text){
+return 0;
+}
+
+
+/*
+正常な着順。
+
+1
+2
+10
+18
+
+など。
+*/
+
+let match =
+text.match(
+/^(\d{1,2})$/
+);
+
+if(match){
+
+const n =
+Number(match[1]);
+
+if(
+n>=1 &&
+n<=18
+){
+
+return n;
+
+}
+
+}
+
+
+/*
+「1着」などの表記にも対応。
+*/
+
+match =
+text.match(
+/^(\d{1,2})着$/
+);
+
+if(match){
+
+const n =
+Number(match[1]);
+
+if(
+n>=1 &&
+n<=18
+){
+
+return n;
+
+}
+
+}
+
+
+/*
+着順欄に
+除外・取消などが入っている場合は
+数字を無理に探さない。
+*/
+
+return 0;
+
+}
+
+
+/* =====================================================
+   距離解析
+===================================================== */
+
+function parseDistance(value){
+
+const text =
+clean(value);
+
+if(!text){
+return 0;
+}
+
+
+/*
+距離列専用。
+
+例:
+
+芝1600
+ダ1800
+障3000
+1600
+
+など。
+
+*/
+
+let match =
+text.match(
+/(?:芝|ダ|ダート|障|障害)?\s*(\d{3,4})\s*(?:m|Ｍ|メートル)?/i
+);
+
+if(!match){
+return 0;
+}
+
+const d =
+Number(match[1]);
+
+
+/*
+競馬の距離として妥当な範囲だけ許可。
+
+2025や2026は、
+この範囲に入っていても
+距離として扱わない。
+
+*/
+
+const allowedDistances=[
+1000,
+1100,
+1150,
+1200,
+1300,
+1400,
+1500,
+1600,
+1700,
+1800,
+1900,
+2000,
+2100,
+2200,
+2300,
+2400,
+2500,
+2600,
+2700,
+2800,
+3000,
+3100,
+3200,
+3300,
+3400,
+3500,
+3600,
+4000
+];
+
+if(
+!allowedDistances.includes(d)
+){
+
+return 0;
+
+}
+
+return d;
+
+}
+
+
+/* =====================================================
+   日付解析
+===================================================== */
+
+function parseRaceDate(value){
+
+const text =
+clean(value);
+
+if(!text){
+return "";
+}
+
+
+/*
+2025.09.12
+2025/09/12
+2025-09-12
+*/
+
+if(
+/^\d{4}[./-]\d{1,2}[./-]\d{1,2}$/.test(text)
+){
+
+return text;
+
+}
+
+
+/*
+25.09.12など、
+2桁年にも対応。
+
+ただし日付列以外からは
+取得しない。
+*/
+
+if(
+/^\d{2}[./-]\d{1,2}[./-]\d{1,2}$/.test(text)
+){
+
+return text;
+
+}
+
+return "";
+
+}
+
+
+/* =====================================================
+   通過順位解析
+===================================================== */
+
+function parsePosition(value){
+
+const text =
+clean(value);
+
+if(!text){
+return "";
+}
+
+
+/*
+通常:
+
+1-1
+2-3
+3-4-5
+8-7
+
+*/
+
+if(
+/^\d+(?:-\d+)+$/.test(text)
+){
+
+return text;
+
+}
+
+
+/*
+「1-2-3(4)」などの
+特殊表記は、
+数字とハイフン部分だけを
+安全に取り出す。
+
+ただし通常形式を優先。
+*/
+
+const match =
+text.match(
+/(\d+(?:-\d+)+)/
+);
+
+if(match){
+
+return match[1];
+
+}
+
+return "";
+
+}
+
+
+/* =====================================================
+   過去走解析
 ===================================================== */
 
 function parsePastRaces(text){
@@ -960,94 +1395,148 @@ const races=[];
 
 
 /*
----------------------------------------------------------
-テーブルヘッダーを探す
+現在解析中の表のヘッダー。
 
-「着順」「通過」の位置を
-実際のテーブル列から取得する。
----------------------------------------------------------
+表ごとに切り替える。
 */
 
-let finishIndex=-1;
-let passageIndex=-1;
-let distanceIndex=-1;
-let dateIndex=-1;
+let currentHeader=null;
 
-for(let i=0;i<lines.length;i++){
 
-if(!lines[i].includes("|")){
+/*
+同一ページ内の別テーブルを
+誤って混ぜないための状態。
+*/
+
+let inTable=false;
+
+
+for(
+let lineIndex=0;
+lineIndex<lines.length;
+lineIndex++
+){
+
+const rawLine =
+lines[lineIndex];
+
+
+/*
+Markdown表ではない行に入ったら
+現在のテーブルを終了。
+
+*/
+
+if(
+!rawLine.includes("|")
+){
+
+currentHeader=null;
+inTable=false;
+
 continue;
+
 }
 
-const headerCells =
-lines[i]
+
+const cells =
+rawLine
 .split("|")
-.map(x=>clean(x));
+.map(
+x=>clean(x)
+);
 
-for(let j=0;j<headerCells.length;j++){
 
-const cell =
-headerCells[j];
+/*
+空行・短すぎる行は無視。
+*/
 
-if(
-finishIndex===-1 &&
-(
-cell==="着順" ||
-cell.includes("着順")
-)
-){
+if(cells.length<3){
 
-finishIndex=j;
-
-}
-
-if(
-passageIndex===-1 &&
-(
-cell==="通過" ||
-cell.includes("通過")
-)
-){
-
-passageIndex=j;
-
-}
-
-if(
-distanceIndex===-1 &&
-(
-cell==="距離" ||
-cell.includes("距離")
-)
-){
-
-distanceIndex=j;
-
-}
-
-if(
-dateIndex===-1 &&
-(
-cell==="日付" ||
-cell.includes("日付")
-)
-){
-
-dateIndex=j;
-
-}
+continue;
 
 }
 
 
 /*
-必要なヘッダーが見つかったら終了。
+-------------------------------------------------
+① ヘッダーを探す
+-------------------------------------------------
 */
 
-if(
-finishIndex!==-1 &&
-passageIndex!==-1
-){
+const detectedHeader =
+detectPastRaceHeader(cells);
+
+const hasUsefulHeader =
+detectedHeader.finish!==undefined ||
+detectedHeader.position!==undefined ||
+detectedHeader.distance!==undefined ||
+detectedHeader.date!==undefined;
+
+
+if(hasUsefulHeader){
+
+currentHeader =
+detectedHeader;
+
+inTable=true;
+
+continue;
+
+}
+
+
+/*
+-------------------------------------------------
+② Markdownの区切り行は無視
+-------------------------------------------------
+*/
+
+const isSeparator =
+cells.every(
+cell=>{
+return (
+cell==="" ||
+/^:?-+:?$/.test(cell)
+);
+}
+);
+
+if(isSeparator){
+
+continue;
+
+}
+
+
+/*
+-------------------------------------------------
+③ ヘッダーが確認できない場合
+-------------------------------------------------
+
+ここで重要。
+
+以前のように、
+ページ全体から適当な数字を
+着順・距離として拾わない。
+
+通過順だけは、
+これまで正しく取れていたため
+安全なフォールバックを許可する。
+*/
+
+if(!currentHeader){
+
+let fallbackPosition="";
+
+for(const cell of cells){
+
+const p =
+parsePosition(cell);
+
+if(p){
+
+fallbackPosition=p;
 
 break;
 
@@ -1055,37 +1544,7 @@ break;
 
 }
 
-
-/*
----------------------------------------------------------
-過去走データ行を解析
----------------------------------------------------------
-*/
-
-for(const line of lines){
-
-if(!line.includes("|")){
-continue;
-}
-
-const cells =
-line
-.split("|")
-.map(x=>clean(x));
-
-if(cells.length<8){
-continue;
-}
-
-
-/*
-ヘッダーそのものは除外。
-*/
-
-if(
-cells.includes("着順") ||
-cells.includes("通過")
-){
+if(!fallbackPosition){
 
 continue;
 
@@ -1093,250 +1552,77 @@ continue;
 
 
 /*
----------------------------------------------------------
-着順
----------------------------------------------------------
+通過だけ取得。
+着順・距離は推測しない。
 */
 
-let finish=0;
+races.push({
 
+date:"",
 
-/*
-まずヘッダーから特定した
-着順列を使用。
-*/
+finish:0,
 
-if(
-finishIndex>=0 &&
-finishIndex<cells.length
-){
+position:fallbackPosition,
 
-const value =
-clean(cells[finishIndex]);
+distance:0,
 
-const n =
-Number(value);
+source:"fallback"
 
-if(
-Number.isInteger(n) &&
-n>=1 &&
-n<=18
-){
+});
 
-finish=n;
-
-}
+continue;
 
 }
 
 
 /*
----------------------------------------------------------
-通過順
----------------------------------------------------------
+-------------------------------------------------
+④ ヘッダーが確認できている場合
+-------------------------------------------------
 */
 
 let positionText="";
-
-
-/*
-まずヘッダーから特定した
-通過列を使用。
-*/
-
-if(
-passageIndex>=0 &&
-passageIndex<cells.length
-){
-
-const value =
-clean(cells[passageIndex]);
-
-if(
-/^\d+(?:-\d+)+$/.test(value)
-){
-
-positionText=value;
-
-}
-
-}
-
-
-/*
----------------------------------------------------------
-フォールバック
-
-ヘッダー構造が取得できなかった場合のみ
-従来方式で探す。
----------------------------------------------------------
-*/
-
-if(!positionText){
-
-for(const cell of cells){
-
-if(
-/^\d+(?:-\d+)+$/.test(cell)
-){
-
-positionText=cell;
-
-break;
-
-}
-
-}
-
-}
-
-
-/*
-着順もヘッダーで取れなかった場合のみ
-先頭側から探す。
-*/
-
-if(!finish){
-
-for(const cell of cells){
-
-const n =
-Number(cell);
-
-if(
-Number.isInteger(n) &&
-n>=1 &&
-n<=18
-){
-
-finish=n;
-
-break;
-
-}
-
-}
-
-}
-
-
-/*
-通過順がない行は
-レース結果として扱わない。
-*/
-
-if(!positionText){
-continue;
-}
-
-
-/*
----------------------------------------------------------
-距離
----------------------------------------------------------
-*/
-
+let finish=0;
 let distance=0;
-
-if(
-distanceIndex>=0 &&
-distanceIndex<cells.length
-){
-
-const value =
-clean(cells[distanceIndex]);
-
-const match =
-value.match(/(\d{3,4})/);
-
-if(match){
-
-const d =
-Number(match[1]);
-
-if(
-d>=1000 &&
-d<=4000
-){
-
-distance=d;
-
-}
-
-}
-
-}
-
-
-/*
-ヘッダーから取れなかった場合の
-距離フォールバック。
-*/
-
-if(!distance){
-
-for(const cell of cells){
-
-const match =
-cell.match(/^(\d{3,4})$/);
-
-if(match){
-
-const d =
-Number(match[1]);
-
-if(
-d>=1000 &&
-d<=4000
-){
-
-distance=d;
-
-break;
-
-}
-
-}
-
-}
-
-}
-
-
-/*
----------------------------------------------------------
-日付
----------------------------------------------------------
-*/
-
 let date="";
 
 
+/*
+通過
+
+ヘッダーで位置が分かっている場合は
+その列だけを見る。
+*/
+
 if(
-dateIndex>=0 &&
-dateIndex<cells.length
+currentHeader.position!==undefined &&
+currentHeader.position<cells.length
 ){
 
-date =
-clean(cells[dateIndex]);
+positionText =
+parsePosition(
+cells[currentHeader.position]
+);
 
 }
 
 
 /*
-日付フォールバック
+通過列が取れなかった場合のみ
+安全なフォールバック。
+
 */
 
-if(!date){
+if(!positionText){
 
 for(const cell of cells){
 
-if(
-/^\d{4}\.\d{1,2}\.\d{1,2}$/.test(cell) ||
-/^\d{4}\/\d{1,2}\/\d{1,2}$/.test(cell)
-){
+const p =
+parsePosition(cell);
 
-date=cell;
+if(p){
+
+positionText=p;
 
 break;
 
@@ -1348,9 +1634,83 @@ break;
 
 
 /*
----------------------------------------------------------
-保存
----------------------------------------------------------
+着順
+
+絶対にページ内の
+適当な数字を探さない。
+
+*/
+
+if(
+currentHeader.finish!==undefined &&
+currentHeader.finish<cells.length
+){
+
+finish =
+parseFinish(
+cells[currentHeader.finish]
+);
+
+}
+
+
+/*
+距離
+
+「距離」列だけから取得。
+*/
+
+if(
+currentHeader.distance!==undefined &&
+currentHeader.distance<cells.length
+){
+
+distance =
+parseDistance(
+cells[currentHeader.distance]
+);
+
+}
+
+
+/*
+日付
+
+「日付」列だけから取得。
+*/
+
+if(
+currentHeader.date!==undefined &&
+currentHeader.date<cells.length
+){
+
+date =
+parseRaceDate(
+cells[currentHeader.date]
+);
+
+}
+
+
+/*
+通過がない行は
+脚質判定には使えないので
+基本的に除外。
+*/
+
+if(!positionText){
+
+continue;
+
+}
+
+
+/*
+取得。
+
+着順や距離が空でも、
+通過が取れていれば残す。
+
 */
 
 races.push({
@@ -1363,20 +1723,16 @@ position:positionText,
 
 distance:distance,
 
-finishIndex:finishIndex,
-
-passageIndex:passageIndex
+source:"header"
 
 });
 
 }
 
 
-/*
----------------------------------------------------------
-重複除去
----------------------------------------------------------
-*/
+/* =====================================================
+   重複除去
+===================================================== */
 
 const unique=[];
 
@@ -1390,8 +1746,28 @@ race.finish+"|"+
 race.position+"|"+
 race.distance;
 
-if(used.has(key)){
+
+/*
+全部が空のデータは除外。
+*/
+
+if(
+!race.position
+){
+
 continue;
+
+}
+
+
+/*
+同じ内容の行だけ除去。
+*/
+
+if(used.has(key)){
+
+continue;
+
 }
 
 used.add(key);
@@ -1402,7 +1778,13 @@ unique.push(race);
 
 
 /*
+-------------------------------------------------
 最大10走
+-------------------------------------------------
+
+取得順はnetkeibaのページ上で
+基本的に直近→過去。
+
 */
 
 return unique.slice(0,10);
@@ -1542,6 +1924,11 @@ scores:scores
 
 /*
 直近のレースほど重くする。
+
+1走目 = 1.00
+2走目 = 0.90
+3走目 = 0.80
+...
 */
 
 const raceResults=[];
@@ -1611,7 +1998,7 @@ scores.closer += points;
 
 
 /*
-個別レース結果
+個別レース結果を保存。
 */
 
 raceResults.push({
@@ -1628,7 +2015,9 @@ last:result.last,
 
 distance:race.distance,
 
-finish:race.finish
+finish:race.finish,
+
+date:race.date
 
 });
 
@@ -1687,7 +2076,9 @@ ranking[1];
 
 
 /*
+--------------------------------
 ① 脚質優位度
+--------------------------------
 */
 
 const dominance =
@@ -1695,7 +2086,9 @@ const dominance =
 
 
 /*
+--------------------------------
 ② 脚質差
+--------------------------------
 */
 
 const separation =
@@ -1703,7 +2096,9 @@ const separation =
 
 
 /*
+--------------------------------
 ③ 一貫性
+--------------------------------
 */
 
 const topStyle =
@@ -1731,7 +2126,9 @@ sameCount/raceResults.length*100
 
 
 /*
+--------------------------------
 ④ 直近3走の一致
+--------------------------------
 */
 
 const recent =
@@ -1759,7 +2156,16 @@ recentSame/recent.length*100
 
 
 /*
+--------------------------------
 ⑤ 最終信頼度
+--------------------------------
+
+注意：
+これは「予測が当たる確率」ではない。
+
+過去走から見た脚質の
+一貫性を数値化したもの。
+
 */
 
 let confidence =
@@ -1770,7 +2176,9 @@ recentConsistency*0.20;
 
 
 /*
-サンプル数が少ない場合は制限。
+サンプル数が少ない場合は
+信頼度を制限。
+
 */
 
 if(raceResults.length===1){
@@ -2091,25 +2499,12 @@ ${race.finish||"--"}
 距離:
 ${race.distance||"--"}
 
-<div class="debug">
-
-着順列:
 ${
-race.finishIndex>=0
-?race.finishIndex
-:"フォールバック"
+race.date
+?
+" / 日付: "+escapeHtml(race.date)
+:""
 }
-
-&nbsp; / &nbsp;
-
-通過列:
-${
-race.passageIndex>=0
-?race.passageIndex
-:"フォールバック"
-}
-
-</div>
 
 </div>
 
@@ -2123,6 +2518,33 @@ pastHtml =
 '<div class="muted">過去走データなし</div>';
 
 }
+
+
+/*
+取得方法の簡易表示。
+
+header = ヘッダーから列を特定
+fallback = 通過だけ安全に取得
+
+*/
+
+let headerCount=0;
+let fallbackCount=0;
+
+h.pastRaces.forEach(
+function(r){
+
+if(r.source==="header"){
+
+headerCount++;
+
+}else{
+
+fallbackCount++;
+
+}
+
+});
 
 
 html+=`
@@ -2208,6 +2630,19 @@ ${scores.closer.toFixed(1)}
 </summary>
 
 ${pastHtml}
+
+<div class="debug-info">
+
+データ取得:
+ヘッダー判定 ${headerCount}件
+/
+通過フォールバック ${fallbackCount}件
+
+<br>
+
+※着順・距離は、列位置を確認できた場合のみ取得します。
+
+</div>
 
 </details>
 
