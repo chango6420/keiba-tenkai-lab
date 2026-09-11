@@ -340,10 +340,91 @@ function paceBonus(h,pace){
   return b;
 }
 
+function courseBonus(h){
+  const course=$('course').value;
+  const distance=Number($('distance').value);
+  const surface=$('surface').value;
+  const going=$('going').value;
+
+  let b=0;
+
+  // 短距離：二の脚・位置取りを重視
+  if(distance<=1400){
+    b+=(h.second_leg-50)*0.12;
+    b+=(h.position-50)*0.10;
+  }
+
+  // マイル：総合型
+  if(distance>=1600 && distance<=1800){
+    b+=(h.training-50)*0.05;
+    b+=(h.position-50)*0.08;
+  }
+
+  // 中長距離：調教・血統をやや重視
+  if(distance>=2000){
+    b+=(h.training-50)*0.08;
+    b+=(h.pedigree-50)*0.08;
+  }
+
+  // ダートは位置取りをやや重視
+  if(surface==='ダート'){
+    b+=(h.position-50)*0.08;
+    b+=(h.second_leg-50)*0.05;
+  }
+
+  // 馬場補正
+  if(going==='稍重' || going==='重'){
+    b+=(h.training-50)*0.04;
+  }
+
+  if(going==='不良'){
+    b+=(h.training-50)*0.07;
+  }
+
+  // 競馬場ごとの簡易傾向
+  if(course==='東京'){
+    b+=(h.position-50)*0.03;
+  }
+
+  if(course==='中山'){
+    b+=(h.position-50)*0.05;
+    b+=(h.second_leg-50)*0.03;
+  }
+
+  if(course==='京都'){
+    b+=(h.position-50)*0.02;
+  }
+
+  if(course==='阪神'){
+    b+=(h.training-50)*0.03;
+  }
+
+  if(course==='中京'){
+    b+=(h.training-50)*0.03;
+  }
+
+  if(course==='新潟'){
+    b+=(h.second_leg-50)*0.02;
+  }
+
+  return b;
+}
+
 function scoreHorse(h,pace){
-  return h.training*.30+h.pedigree*.25+
-    h.position*.25+h.second_leg*.20+
-    paceBonus(h,pace);
+  const base=
+    h.training*.30+
+    h.pedigree*.25+
+    h.position*.25+
+    h.second_leg*.20;
+
+  const paceAdj=paceBonus(h,pace);
+  const courseAdj=courseBonus(h);
+
+  h.baseScore=base;
+  h.paceAdj=paceAdj;
+  h.courseAdj=courseAdj;
+
+  return base+paceAdj+courseAdj;
 }
 
 function calculatePrediction(){
@@ -389,9 +470,11 @@ function renderPrediction(p){
       <div>
         <div class="name">${h.mark} ${h.name}</div>
         <div class="sub">
-          ${h.style} / 総合 ${h.score.toFixed(1)}
-          / 展開補正 ${paceBonus(h,p.pace)>=0?'+':''}${paceBonus(h,p.pace)}
-        </div>
+  ${h.style} / 総合 ${h.score.toFixed(1)}
+  / 基礎 ${h.baseScore.toFixed(1)}
+  / 展開 ${h.paceAdj>=0?'+':''}${h.paceAdj.toFixed(1)}
+  / コース等 ${h.courseAdj>=0?'+':''}${h.courseAdj.toFixed(1)}
+</div>
       </div>
       <div class="mark">${h.mark}</div>
       <div class="rate">${h.rate.toFixed(1)}%</div>
