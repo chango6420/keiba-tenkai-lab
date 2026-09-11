@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>競馬展開ラボ v0.6.1</title>
+<title>競馬展開ラボ v0.6.2</title>
 
 <style>
 *{box-sizing:border-box}
@@ -235,7 +235,7 @@ th{background:#eceff1}
 
 <header>
 <h1>競馬展開ラボ</h1>
-<span class="badge">v0.6.1 開発版</span>
+<span class="badge">v0.6.2 開発版</span>
 </header>
 
 <div class="container">
@@ -485,11 +485,6 @@ netkeiba出馬表から取得した情報
 
 "use strict";
 
-
-/* =========================
-   基本変数
-========================= */
-
 let raceIds=[];
 let selectedRaceId="";
 let horses=[];
@@ -723,7 +718,6 @@ document.getElementById("mainCard").style.display="none";
 
 document.getElementById("horseDataCard").style.display="none";
 
-
 try{
 
 const url=
@@ -791,10 +785,7 @@ return "";
 
 
 /*
-netkeibaの馬リンク：
-
-[オーブルクール![Image ...](...)]
-(https://db.netkeiba.com/horse/... "オーブルクール")
+タイトル付きMarkdownリンク
 */
 
 let m=
@@ -808,7 +799,7 @@ return m[1].trim();
 
 
 /*
-通常リンク
+通常のnetkeiba馬リンク
 */
 
 m=
@@ -826,12 +817,13 @@ return m[1]
 
 
 /*
-画像除去
+画像Markdown除去
 */
 
 let text=
 cell
 .replace(/!\[[^\]]*\]\([^)]*\)/g,"")
+.replace(/\[[^\]]*\]\([^)]*\)/g,"")
 .replace(/\[|\]/g,"")
 .trim();
 
@@ -862,7 +854,311 @@ return isNaN(n)?0:n;
 
 
 /* =========================
-   ★新パーサー
+   セル掃除
+========================= */
+
+function cleanCell(cell){
+
+return String(cell||"")
+.replace(/!\[[^\]]*\]\([^)]*\)/g,"")
+.replace(/\[[^\]]*\]\([^)]*\)/g,"")
+.replace(/\*\*/g,"")
+.replace(/__/g,"")
+.replace(/`/g,"")
+.trim();
+
+}
+
+
+/* =========================
+   馬行判定
+========================= */
+
+function getHorseNumberFromRow(cells){
+
+for(let i=0;i<Math.min(cells.length,4);i++){
+
+const c=cleanCell(cells[i]);
+
+let m=c.match(/^(\d{1,2})$/);
+
+if(m){
+
+const n=parseInt(m[1],10);
+
+if(n>=1&&n<=18){
+return n;
+}
+
+}
+
+}
+
+return 0;
+
+}
+
+
+/* =========================
+   オッズ取得
+========================= */
+
+function getOddsFromCells(cells){
+
+/*
+「単勝」付近を最優先
+*/
+
+for(let i=0;i<cells.length;i++){
+
+const c=cleanCell(cells[i]);
+
+if(
+c.includes("単勝")||
+c.includes("オッズ")
+){
+
+const m=
+c.match(/(\d+(?:\.\d+)?)/);
+
+if(m){
+const n=parseFloat(m[1]);
+
+if(n>0){
+return n;
+}
+
+}
+
+}
+
+}
+
+
+/*
+表全体から1.1以上の数字を探す。
+
+ただし斤量や年齢などを除外する。
+*/
+
+const candidates=[];
+
+cells.forEach(function(cell){
+
+const c=cleanCell(cell);
+
+const nums=
+c.match(/\b\d+\.\d+\b/g)||[];
+
+nums.forEach(function(x){
+
+const n=parseFloat(x);
+
+if(
+n>=1.1&&
+n<=9999&&
+n!==50&&
+n!==51&&
+n!==52&&
+n!==53&&
+n!==54&&
+n!==55&&
+n!==56&&
+n!==57&&
+n!==58&&
+n!==59&&
+n!==60
+){
+
+candidates.push(n);
+
+}
+
+});
+
+});
+
+
+if(candidates.length){
+
+return candidates[candidates.length-1];
+
+}
+
+return 0;
+
+}
+
+
+/* =========================
+   性齢取得
+========================= */
+
+function getSexAge(cells){
+
+for(const cell of cells){
+
+const c=cleanCell(cell);
+
+const m=
+c.match(/(牡|牝|セ)\s*(\d+)/);
+
+if(m){
+return m[1]+m[2];
+}
+
+}
+
+return "";
+
+}
+
+
+/* =========================
+   斤量取得
+========================= */
+
+function getWeight(cells){
+
+for(const cell of cells){
+
+const c=cleanCell(cell);
+
+const m=
+c.match(/\b(4\d|5\d|6\d)\.0\b/);
+
+if(m){
+
+const n=parseFloat(m[0]);
+
+if(n>=45&&n<=65){
+return n;
+}
+
+}
+
+}
+
+return 0;
+
+}
+
+
+/* =========================
+   騎手取得
+========================= */
+
+function getJockey(cells){
+
+for(let i=0;i<cells.length;i++){
+
+const c=cleanCell(cells[i]);
+
+if(!c){
+continue;
+}
+
+if(
+c.includes("牡")||
+c.includes("牝")||
+c.includes("セ")
+){
+continue;
+}
+
+if(
+c.includes("美浦")||
+c.includes("栗東")
+){
+continue;
+}
+
+if(
+c.includes("単勝")||
+c.includes("オッズ")
+){
+continue;
+}
+
+if(
+c.match(/^\d/)||
+c.match(/^\d+\.\d+$/)
+){
+continue;
+}
+
+
+/*
+日本語2〜8文字程度を騎手候補にする
+*/
+
+if(
+c.length>=2&&
+c.length<=8&&
+/^[一-龯ぁ-んァ-ヶ々ー]+$/.test(c)
+){
+
+return c;
+
+}
+
+}
+
+return "";
+
+}
+
+
+/* =========================
+   厩舎取得
+========================= */
+
+function getStable(cells){
+
+for(const cell of cells){
+
+const c=cleanCell(cell);
+
+const m=
+c.match(/((?:美浦|栗東)[^\s|]*)/);
+
+if(m){
+return m[1];
+}
+
+}
+
+return "";
+
+}
+
+
+/* =========================
+   人気取得
+========================= */
+
+function getPopularity(cells){
+
+for(const cell of cells){
+
+const c=cleanCell(cell);
+
+const m=
+c.match(/(\d+)\s*番人気/);
+
+if(m){
+return parseInt(m[1],10);
+}
+
+}
+
+return 0;
+
+}
+
+
+/* =========================
+   ★ v0.6.2 新パーサー
 ========================= */
 
 function parseRacePage(text){
@@ -875,62 +1171,99 @@ debug("総行数: "+lines.length);
 
 
 /*
-各行について、
-「db.netkeiba.com/horse/」
-を含む行を馬行として処理。
+--------------------------------
+重要変更
 
-これならMarkdown表のセル位置が変わっても
-馬名を直接拾える。
+v0.6.1では
+「db.netkeiba.com/horse/を含む行」
+だけを調べていた。
+
+v0.6.2では、
+Markdown表の「1〜18番の行」を直接探す。
+--------------------------------
 */
 
 for(let i=0;i<lines.length;i++){
 
-const line=lines[i];
+const rawLine=lines[i];
 
-if(
-!line.includes("db.netkeiba.com/horse/")
-){
+if(!rawLine.includes("|")){
+continue;
+}
+
+const cells=
+rawLine
+.split("|")
+.map(x=>x.trim());
+
+const horseNo=
+getHorseNumberFromRow(cells);
+
+if(!horseNo){
 continue;
 }
 
 
 /*
---------------------------------
-馬番
---------------------------------
+馬名候補
 
-行の先頭付近に
-
-| 1 | ...
-
-という形があるので、
-最初の1〜18の整数を取得。
+通常は馬番の次のセル。
 */
 
-const cells=
-line
-.split("|")
-.map(x=>x.trim());
+let horseName="";
 
-let horseNo=0;
+for(let j=0;j<cells.length;j++){
 
-for(let j=0;j<Math.min(cells.length,5);j++){
+const cleaned=cleanCell(cells[j]);
 
-const cleaned=
-cells[j]
-.replace(/[*_]/g,"")
+if(
+cleaned.includes("db.netkeiba.com/horse/")
+){
+
+horseName=
+extractHorseName(cells[j]);
+
+if(horseName){
+break;
+}
+
+}
+
+}
+
+
+/*
+リンクが無い場合は、
+馬番の直後のセルを馬名候補にする。
+*/
+
+if(!horseName){
+
+for(let j=0;j<cells.length-1;j++){
+
+const current=
+cleanCell(cells[j]);
+
+if(
+current===String(horseNo)
+){
+
+const candidate=
+cleanCell(cells[j+1]);
+
+if(
+candidate&&
+candidate.length>=2&&
+candidate.length<=30&&
+!candidate.match(/^\d/)
+){
+
+horseName=
+candidate
+.replace(/!$begin:math:display$\[\^$end:math:display$]*\]$begin:math:text$\[\^\)\]\*$end:math:text$/g,"")
+.replace(/$begin:math:display$\[\^$end:math:display$]*\]/g,"")
 .trim();
 
-const m=
-cleaned.match(/^(\d{1,2})$/);
-
-if(m){
-
-const n=parseInt(m[1],10);
-
-if(n>=1&&n<=18){
-
-horseNo=n;
 break;
 
 }
@@ -939,276 +1272,92 @@ break;
 
 }
 
-
-/*
-先頭の区切り形式によって
-上記で取れない場合の予備処理
-*/
-
-if(!horseNo){
-
-const firstPart=
-line
-.replace(/^\s*\|/,"")
-.trim();
-
-const m=
-firstPart.match(/^(\d{1,2})\s*\|/);
-
-if(m){
-
-const n=parseInt(m[1],10);
-
-if(n>=1&&n<=18){
-horseNo=n;
-}
-
-}
-
-}
-
-
-if(!horseNo){
-debug("馬番取得失敗: "+line.substring(0,150));
-continue;
 }
 
 
 /*
---------------------------------
-馬名
---------------------------------
+それでも取れない場合は
+周辺行を探す。
 */
 
-const horseName=
-extractHorseName(line);
+if(!horseName){
+
+for(let k=Math.max(0,i-2);
+k<=Math.min(lines.length-1,i+2);
+k++){
+
+const nearby=lines[k];
+
+if(
+nearby.includes("db.netkeiba.com/horse/")
+){
+
+horseName=
+extractHorseName(nearby);
+
+if(horseName){
+break;
+}
+
+}
+
+}
+
+}
+
 
 if(!horseName){
 
 debug(
-"馬名取得失敗 馬番="+
-horseNo
+"馬名取得失敗: 馬番="+
+horseNo+
+" 行="+
+rawLine.substring(0,180)
 );
 
 continue;
-}
-
-
-/*
---------------------------------
-セル分割
---------------------------------
-*/
-
-const dataCells=
-line
-.split("|")
-.map(x=>x.trim())
-.filter((x,index,arr)=>{
-return !(index===0&&x==="");
-});
-
-
-const joined=dataCells.join(" ");
-
-
-/*
---------------------------------
-性齢
---------------------------------
-*/
-
-let sexAge="";
-
-const ageMatch=
-joined.match(/(牡|牝|セ)(\d+)/);
-
-if(ageMatch){
-
-sexAge=
-ageMatch[1]+ageMatch[2];
 
 }
 
 
 /*
---------------------------------
-斤量
---------------------------------
+重複防止
 */
-
-let weight=0;
-
-const weightMatches=
-joined.match(/\b\d{2}\.\d\b/g)||[];
-
-if(weightMatches.length){
-
-/*
-50〜60kg程度のものを斤量候補にする
-*/
-
-const candidates=
-weightMatches
-.map(x=>parseFloat(x))
-.filter(x=>x>=45&&x<=65);
-
-if(candidates.length){
-
-weight=candidates[0];
-
-}
-
-}
-
-
-/*
---------------------------------
-騎手
---------------------------------
-
-馬名の後ろ側から
-最初の日本語名らしい文字列を拾う。
-*/
-
-let jockey="";
-
-const horseIndex=
-dataCells.findIndex(cell=>
-cell.includes("db.netkeiba.com/horse/")
-);
-
-if(horseIndex>=0){
-
-const after=
-dataCells.slice(horseIndex+1);
-
-for(const cell of after){
-
-const cleaned=
-cell
-.replace(/!\[[^\]]*\]\([^)]*\)/g,"")
-.replace(/\[|\]/g,"")
-.trim();
-
-if(!cleaned){
-continue;
-}
 
 if(
-cleaned.length>=2&&
-cleaned.length<=8&&
-!/\d/.test(cleaned)&&
-!cleaned.includes("美浦")&&
-!cleaned.includes("栗東")
+result.some(h=>h.no===horseNo)
 ){
 
-jockey=cleaned;
-break;
-
-}
-
-}
+continue;
 
 }
 
 
 /*
---------------------------------
-厩舎
---------------------------------
+各データ取得
 */
 
-let stable="";
+const sexAge=
+getSexAge(cells);
 
-const stableMatch=
-joined.match(
-/((?:美浦|栗東)[^\s|]*)/
-);
+const weight=
+getWeight(cells);
 
-if(stableMatch){
+const jockey=
+getJockey(cells);
 
-stable=stableMatch[1];
+const stable=
+getStable(cells);
 
-}
+const odds=
+getOddsFromCells(cells);
 
-
-/*
---------------------------------
-オッズ
---------------------------------
-*/
-
-let odds=0;
-
-/*
-「単勝 10.7」のような近接パターンを優先
-*/
-
-const oddsMatch=
-joined.match(
-/(?:単勝|オッズ)[^\d]*(\d+(?:\.\d+)?)/i
-);
-
-if(oddsMatch){
-
-odds=parseFloat(oddsMatch[1]);
-
-}
+const popularity=
+getPopularity(cells);
 
 
 /*
-上記で取れない場合、
-2以上の小数を候補にする。
-*/
-
-if(!odds){
-
-const nums=
-joined.match(/\b\d+\.\d+\b/g)||[];
-
-const candidates=
-nums
-.map(x=>parseFloat(x))
-.filter(x=>
-x>=1.1&&
-x<=9999
-);
-
-if(candidates.length){
-
-odds=candidates[candidates.length-1];
-
-}
-
-}
-
-
-/*
---------------------------------
-人気
---------------------------------
-*/
-
-let popularity=0;
-
-const popMatch=
-joined.match(
-/(\d+)\s*番人気/
-);
-
-if(popMatch){
-
-popularity=
-parseInt(popMatch[1],10);
-
-}
-
-
-/*
---------------------------------
-馬データ
---------------------------------
+馬オブジェクト
 */
 
 const horse={
@@ -1229,10 +1378,6 @@ odds:odds,
 
 popularity:popularity,
 
-/*
-まだ自動取得していない項目
-*/
-
 style:"差し",
 
 secondLeg:50,
@@ -1246,14 +1391,6 @@ position:50
 };
 
 
-/*
-重複防止
-*/
-
-if(
-!result.some(x=>x.no===horse.no)
-){
-
 result.push(horse);
 
 debug(
@@ -1263,6 +1400,129 @@ horse.no+
 horse.name+
 " odds="+
 horse.odds
+);
+
+}
+
+
+/*
+--------------------------------
+念のため、まだ不足している馬番を
+「リンク行」から追加探索
+--------------------------------
+*/
+
+if(result.length<18){
+
+debug(
+"通常パース後: "+
+result.length+
+"頭。追加探索開始"
+);
+
+for(let i=0;i<lines.length;i++){
+
+const line=lines[i];
+
+if(
+!line.includes("db.netkeiba.com/horse/")
+){
+continue;
+}
+
+const m=
+line.match(
+/\]$begin:math:text$\[\^\)\]\*\\s\+\"\(\[\^\"\]\+\)\"$end:math:text$/
+);
+
+if(!m){
+continue;
+}
+
+const horseName=m[1].trim();
+
+
+/*
+行の周辺から馬番を探す
+*/
+
+let horseNo=0;
+
+for(let k=Math.max(0,i-3);
+k<=Math.min(lines.length-1,i+3);
+k++){
+
+const nearby=lines[k];
+
+const nums=
+nearby.match(
+/(?:^|\|)\s*(\d{1,2})\s*(?:\||$)/
+);
+
+if(nums){
+
+const n=parseInt(nums[1],10);
+
+if(n>=1&&n<=18){
+
+horseNo=n;
+break;
+
+}
+
+}
+
+}
+
+
+if(!horseNo){
+continue;
+}
+
+if(
+result.some(h=>h.no===horseNo)
+){
+continue;
+}
+
+
+const horse={
+
+no:horseNo,
+
+name:horseName,
+
+sexAge:"",
+
+weight:0,
+
+jockey:"",
+
+stable:"",
+
+odds:0,
+
+popularity:0,
+
+style:"差し",
+
+secondLeg:50,
+
+training:50,
+
+pedigree:50,
+
+position:50
+
+};
+
+result.push(horse);
+
+debug(
+"追加取得: "+
+horse.no+
+" "+
+horse.name
 );
 
 }
@@ -1292,7 +1552,9 @@ for(let n=1;n<=18;n++){
 if(
 !result.some(h=>h.no===n)
 ){
+
 missing.push(n);
+
 }
 
 }
@@ -1311,9 +1573,23 @@ missing.join(",")
 
 }else{
 
-debug("1〜"+result.length+"番まで全頭取得");
+debug(
+"1〜"+
+result.length+
+"番まで全頭取得"
+);
 
 }
+
+
+/*
+取得馬一覧
+*/
+
+debug(
+"取得馬番一覧: "+
+result.map(h=>h.no).join(",")
+);
 
 return result;
 
@@ -2185,7 +2461,7 @@ saveVerify
 
 setToday();
 
-debug("競馬展開ラボ v0.6.1 起動");
+debug("競馬展開ラボ v0.6.2 起動");
 
 </script>
 
