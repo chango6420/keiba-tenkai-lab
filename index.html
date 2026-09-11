@@ -1,1653 +1,512 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>競馬展開ラボ v0.4</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>競馬展開ラボ v0.5</title>
 
 <style>
-:root{
-  --bg:#0d1117;
-  --card:#161b22;
-  --line:#30363d;
-  --text:#f0f3f6;
-  --muted:#9da7b3;
-  --accent:#1f6feb;
-  --good:#3fb950;
-  --warn:#d29922;
-  --bad:#f85149;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,
-  "Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
-}
-main{
-  max-width:1000px;
-  margin:auto;
-  padding:14px 12px 70px;
-}
-.top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-}
-.title{
-  font-size:22px;
-  font-weight:800;
-}
-.badge{
-  font-size:12px;
-  padding:5px 8px;
-  border:1px solid var(--line);
-  border-radius:999px;
-  color:var(--muted);
-}
-.card{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:14px;
-  margin-top:12px;
-}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:8px;
-}
-label{
-  font-size:11px;
-  color:var(--muted);
-  display:block;
-  margin-bottom:4px;
-}
-input,select,button{
-  width:100%;
-  min-height:42px;
-  border-radius:10px;
-  border:1px solid var(--line);
-  background:#0d1117;
-  color:var(--text);
-  padding:8px;
-  font-size:14px;
-}
-button{
-  background:#21262d;
-  font-weight:700;
-}
-.primary{
-  background:var(--accent);
-  border-color:var(--accent);
-}
-.tabs{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:6px;
-  margin-top:12px;
-}
-.tab.active{
-  background:var(--accent);
-  border-color:var(--accent);
-}
-.section{display:none}
-.section.active{display:block}
-
-.kpis{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:8px;
-}
-.kpi{
-  padding:10px;
-  background:#0d1117;
-  border:1px solid var(--line);
-  border-radius:10px;
-  text-align:center;
-}
-.kpi b{
-  display:block;
-  font-size:20px;
-  margin-top:4px;
+* {
+    box-sizing: border-box;
 }
 
-.horse{
-  display:grid;
-  grid-template-columns:38px 1fr 55px 75px 70px;
-  gap:8px;
-  align-items:center;
-  padding:11px 0;
-  border-bottom:1px solid var(--line);
-}
-.no{font-weight:800}
-.name{font-weight:700}
-.sub{
-  font-size:11px;
-  color:var(--muted);
-  margin-top:3px;
-  line-height:1.5;
-}
-.mark{
-  font-size:20px;
-  text-align:center;
-}
-.rate{text-align:right}
-.ev{
-  text-align:right;
-  font-weight:700;
-}
-.good{color:var(--good)}
-.warn{color:var(--warn)}
-.bad{color:var(--bad)}
-
-.form-row{
-  display:grid;
-  grid-template-columns:50px 1.5fr 90px 90px 90px 90px 90px 90px;
-  gap:5px;
-  margin-bottom:8px;
-}
-.form-row input,
-.form-row select{
-  min-height:38px;
-  font-size:12px;
-  padding:5px;
+body {
+    margin: 0;
+    padding: 20px;
+    background: #111;
+    color: #eee;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
 }
 
-.status{
-  font-size:12px;
-  color:var(--muted);
-  line-height:1.5;
-}
-.ok{color:var(--good)}
-
-.track{
-  position:relative;
-  height:420px;
-  background:linear-gradient(#1b222c,#11161d);
-  border:1px solid var(--line);
-  border-radius:12px;
-  overflow:hidden;
-}
-.track::before{
-  content:"";
-  position:absolute;
-  left:50%;
-  top:0;
-  bottom:0;
-  width:1px;
-  background:rgba(255,255,255,.08);
-}
-.runner{
-  position:absolute;
-  width:32px;
-  height:32px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#f0f3f6;
-  color:#111;
-  font-size:12px;
-  font-weight:900;
-  transition:all .45s linear;
-}
-.note{
-  padding:10px;
-  background:#0d1117;
-  border:1px solid var(--line);
-  border-radius:10px;
-  font-size:12px;
-  line-height:1.6;
-  margin-top:10px;
-}
-.reason{
-  margin-top:7px;
-  padding:8px;
-  background:#0d1117;
-  border-radius:8px;
-  font-size:11px;
-  color:var(--muted);
-  line-height:1.5;
-}
-.section-title{
-  font-weight:800;
-  margin-bottom:8px;
-}
-.rank-row{
-  padding:12px 0;
-  border-bottom:1px solid var(--line);
-}
-.rank-head{
-  display:flex;
-  justify-content:space-between;
-  gap:8px;
-}
-.small{
-  font-size:11px;
-  color:var(--muted);
-}
-.legend{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:8px;
-}
-.legend span{
-  font-size:11px;
-  padding:5px 8px;
-  border:1px solid var(--line);
-  border-radius:999px;
+.container {
+    max-width: 1100px;
+    margin: auto;
 }
 
-@media(min-width:700px){
-  .grid{grid-template-columns:repeat(4,1fr)}
+h1 {
+    margin-bottom: 5px;
 }
 
-@media(max-width:650px){
-  .kpis{
-    grid-template-columns:repeat(2,1fr);
-  }
+.subtitle {
+    color: #999;
+    margin-bottom: 25px;
+}
 
-  .horse{
-    grid-template-columns:30px 1fr 38px 58px;
-  }
+.panel {
+    background: #1c1c1c;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
 
-  .horse .ev{
-    display:none;
-  }
+.controls {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
 
-  .form-row{
-    grid-template-columns:40px 1fr 80px;
-    gap:5px;
-    padding:8px 0;
-    margin-bottom:0;
-    border-bottom:1px solid var(--line);
-  }
+label {
+    display: block;
+    color: #aaa;
+    font-size: 13px;
+    margin-bottom: 6px;
+}
 
-  .form-row input,
-  .form-row select{
-    min-height:40px;
-    font-size:12px;
-  }
+select,
+input,
+button {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #444;
+    background: #111;
+    color: #fff;
+    font-size: 15px;
+}
 
-  .form-row .extra{
-    display:block;
-  }
+button {
+    background: #2b6cff;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
 
-  .form-row input:nth-child(4){
-    grid-column:1 / 2;
-  }
-  .form-row input:nth-child(5){
-    grid-column:2 / 3;
-  }
-  .form-row input:nth-child(6){
-    grid-column:3 / 4;
-  }
-  .form-row input:nth-child(7){
-    grid-column:1 / 2;
-  }
-  .form-row input:nth-child(8){
-    grid-column:2 / 4;
-  }
+button:hover {
+    opacity: 0.85;
+}
+
+.status {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    background: #111;
+    color: #aaa;
+    white-space: pre-wrap;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+}
+
+th,
+td {
+    padding: 10px;
+    border-bottom: 1px solid #333;
+    text-align: center;
+}
+
+th {
+    background: #222;
+    color: #aaa;
+    font-size: 13px;
+}
+
+td {
+    font-size: 14px;
+}
+
+.horse-name {
+    font-weight: bold;
+    text-align: left;
+}
+
+.success {
+    color: #55d98a;
+}
+
+.error {
+    color: #ff6b6b;
+}
+
+.small {
+    color: #777;
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+@media (max-width: 700px) {
+    .controls {
+        grid-template-columns: 1fr;
+    }
+
+    body {
+        padding: 10px;
+    }
 }
 </style>
 </head>
 
 <body>
-<main>
 
-<div class="top">
-  <div class="title">競馬展開ラボ</div>
-  <div class="badge">v0.4 開発版</div>
-</div>
+<div class="container">
 
-<div class="card">
-  <div class="grid">
+    <h1>競馬展開ラボ v0.5</h1>
 
-    <div>
-      <label>開催日</label>
-      <input id="date" type="date">
+    <div class="subtitle">
+        netkeiba 出馬表自動取得テスト
     </div>
 
-    <div>
-      <label>競馬場</label>
-      <select id="course">
-        <option>東京</option>
-        <option>中山</option>
-        <option>京都</option>
-        <option>阪神</option>
-        <option>中京</option>
-        <option>新潟</option>
-        <option>小倉</option>
-        <option>福島</option>
-        <option>札幌</option>
-        <option>函館</option>
-      </select>
-    </div>
-
-    <div>
-      <label>レース</label>
-      <select id="raceNo">
-        <option>1R</option><option>2R</option><option>3R</option>
-        <option>4R</option><option>5R</option><option>6R</option>
-        <option>7R</option><option>8R</option><option>9R</option>
-        <option>10R</option><option>11R</option><option>12R</option>
-      </select>
-    </div>
-
-    <div>
-      <label>距離</label>
-      <select id="distance">
-        <option>1000</option>
-        <option>1200</option>
-        <option>1400</option>
-        <option>1600</option>
-        <option>1800</option>
-        <option>2000</option>
-        <option>2200</option>
-        <option>2400</option>
-        <option>2500</option>
-        <option>2600</option>
-        <option>3000</option>
-        <option>3200</option>
-        <option>3400</option>
-        <option>3600</option>
-      </select>
-    </div>
-
-  </div>
-
-  <div class="grid" style="margin-top:8px">
-
-    <div>
-      <label>芝/ダート</label>
-      <select id="surface">
-        <option>芝</option>
-        <option>ダート</option>
-      </select>
-    </div>
-
-    <div>
-      <label>馬場</label>
-      <select id="going">
-        <option>良</option>
-        <option>稍重</option>
-        <option>重</option>
-        <option>不良</option>
-      </select>
-    </div>
-
-    <div>
-      <label>頭数</label>
-      <select id="horseCount" onchange="resizeHorses()">
-        <option>8</option>
-        <option>10</option>
-        <option>12</option>
-        <option selected>16</option>
-        <option>18</option>
-      </select>
-    </div>
-
-    <div>
-      <label>人気馬の評価</label>
-      <select id="favoriteMode">
-        <option value="normal">通常</option>
-        <option value="caution">人気馬を少し警戒</option>
-        <option value="value">期待値重視</option>
-      </select>
-    </div>
-
-  </div>
-</div>
-
-<div class="card">
-  <div class="section-title">出馬表入力</div>
-
-  <div class="status" style="margin-bottom:10px">
-    数値評価は0〜100。<br>
-    二の脚＝先行力、調教＝状態、血統＝適性、位置＝想定ポジション適性。
-    オッズは単勝オッズ。
-  </div>
-
-  <div id="horseForm"></div>
-
-  <button class="primary" onclick="calculatePrediction()">
-    この条件で予想を計算
-  </button>
-</div>
-
-<div class="tabs">
-  <button class="tab active" onclick="tab('prediction',this)">予想</button>
-  <button class="tab" onclick="tab('lineup',this)">隊列</button>
-  <button class="tab" onclick="tab('pedigree',this)">血統</button>
-  <button class="tab" onclick="tab('value',this)">期待値</button>
-  <button class="tab" onclick="tab('verify',this)">検証</button>
-</div>
-
-<section id="prediction" class="section active">
-
-  <div class="card">
-
-    <div class="kpis">
-
-      <div class="kpi">
-        想定ペース
-        <b id="pace">—</b>
-      </div>
-
-      <div class="kpi">
-        本命
-        <b id="mainMark">—</b>
-      </div>
-
-      <div class="kpi">
-        頭数
-        <b id="count">0</b>
-      </div>
-
-      <div class="kpi">
-        展開傾向
-        <b id="flow">—</b>
-      </div>
-
-    </div>
-
-    <div id="paceComment" class="note">
-      まだ予想を計算していません。
-    </div>
-
-    <div class="legend">
-      <span>S＝スローペース</span>
-      <span>M＝平均ペース</span>
-      <span>H＝ハイペース</span>
-    </div>
-
-  </div>
-
-  <div class="card">
-    <div id="horses"></div>
-  </div>
-
-</section>
-
-<section id="lineup" class="section">
-
-  <div class="card">
-
-    <div style="display:flex;gap:8px">
-      <button onclick="startAnim()">START</button>
-      <button onclick="stopAnim()">STOP</button>
-      <button onclick="speedUp()">速度+</button>
-    </div>
-
-    <div class="track" id="track" style="margin-top:10px"></div>
-
-    <div class="status" style="margin-top:8px">
-      現在の脚質と想定ペースから簡易隊列を表示します。
-    </div>
-
-  </div>
-
-</section>
-
-<section id="pedigree" class="section">
-
-  <div class="card">
-    <div id="pedigreeBox">
-      予想計算後に表示します。
-    </div>
-  </div>
-
-</section>
-
-<section id="value" class="section">
-
-  <div class="card">
-
-    <div class="section-title">
-      期待値ランキング
-    </div>
-
-    <div class="status">
-      期待値＝想定勝率×単勝オッズ。<br>
-      100%以上はモデル上の期待値プラス候補。
-    </div>
-
-    <div id="valueBox" style="margin-top:10px"></div>
-
-  </div>
-
-</section>
-
-<section id="verify" class="section">
-
-  <div class="card">
-
-    <label>実走3F</label>
-    <input id="actual3f" inputmode="decimal" placeholder="例 34.8">
-
-    <label style="margin-top:8px">
-      実際の展開・予想との差分
-    </label>
-
-    <input
-      id="verifyMemo"
-      placeholder="例：想定より前が速かった"
-    >
-
-    <button
-      class="primary"
-      style="margin-top:10px"
-      onclick="saveVerify()"
-    >
-      検証結果を保存
-    </button>
-
-    <div
-      id="verifyStatus"
-      class="status"
-      style="margin-top:8px"
-    ></div>
-
-  </div>
-
-</section>
-
-</main>
-
-<script>
-
-let horses=[];
-let timer=null;
-let animStep=0;
-let speed=1;
-
-function $(id){
-  return document.getElementById(id);
-}
-
-function init(){
-
-  $('date').value=new Date()
-    .toISOString()
-    .slice(0,10);
-
-  resizeHorses();
-
-}
-
-function tab(id,btn){
-
-  document
-    .querySelectorAll('.section')
-    .forEach(x=>x.classList.remove('active'));
-
-  document
-    .querySelectorAll('.tab')
-    .forEach(x=>x.classList.remove('active'));
-
-  $(id).classList.add('active');
-
-  btn.classList.add('active');
-
-}
-
-function resizeHorses(){
-
-  const count=Number($('horseCount').value);
-  const box=$('horseForm');
-
-  box.innerHTML='';
-
-  for(let i=1;i<=count;i++){
-
-    const row=document.createElement('div');
-
-    row.className='form-row';
-
-    row.innerHTML=`
-
-      <input
-        id="no${i}"
-        value="${i}"
-        type="number"
-        min="1"
-        placeholder="馬番"
-      >
-
-      <input
-        id="name${i}"
-        placeholder="馬名"
-      >
-
-      <select id="style${i}">
-        <option>逃げ</option>
-        <option>先行</option>
-        <option selected>差し</option>
-        <option>追込</option>
-      </select>
-
-      <input
-        id="leg${i}"
-        class="extra"
-        type="number"
-        min="0"
-        max="100"
-        placeholder="二の脚"
-      >
-
-      <input
-        id="training${i}"
-        class="extra"
-        type="number"
-        min="0"
-        max="100"
-        placeholder="調教"
-      >
-
-      <input
-        id="pedigree${i}"
-        class="extra"
-        type="number"
-        min="0"
-        max="100"
-        placeholder="血統"
-      >
-
-      <input
-        id="position${i}"
-        class="extra"
-        type="number"
-        min="0"
-        max="100"
-        placeholder="位置"
-      >
-
-      <input
-        id="odds${i}"
-        class="extra"
-        type="number"
-        step="0.1"
-        min="1"
-        placeholder="オッズ"
-      >
-
-    `;
-
-    box.appendChild(row);
-
-  }
-
-}
-
-function readHorses(){
-
-  const count=Number($('horseCount').value);
-
-  const arr=[];
-
-  for(let i=1;i<=count;i++){
-
-    const name=$(`name${i}`).value.trim();
-
-    if(!name)continue;
-
-    arr.push({
-
-      no:Number($(`no${i}`).value)||i,
-
-      name:name,
-
-      style:$(`style${i}`).value,
-
-      second_leg:Number($(`leg${i}`).value)||50,
-
-      training:Number($(`training${i}`).value)||50,
-
-      pedigree:Number($(`pedigree${i}`).value)||50,
-
-      position:Number($(`position${i}`).value)||50,
-
-      odds:Number($(`odds${i}`).value)||0
-
-    });
-
-  }
-
-  return arr;
-
-}
-
-
-/* ----------------------------------
-   ペース判定
----------------------------------- */
-
-function calcPace(hs){
-
-  if(!hs.length){
-
-    return{
-      pace:'M',
-      flow:'標準',
-      comment:'データ不足'
-    };
-
-  }
-
-  const front=hs.filter(
-    h=>h.style==='逃げ'||h.style==='先行'
-  );
-
-  const escape=hs.filter(
-    h=>h.style==='逃げ'
-  );
-
-  const frontPower=front.reduce(
-    (s,h)=>s+h.second_leg,
-    0
-  )/(front.length||1);
-
-  const escapePower=escape.reduce(
-    (s,h)=>s+h.second_leg,
-    0
-  )/(escape.length||1);
-
-  const fieldSize=hs.length;
-
-  let pressure=0;
-
-  pressure += front.length*1.5;
-
-  pressure += escape.length*2;
-
-  pressure += Math.max(
-    0,
-    (frontPower-50)/10
-  );
-
-  pressure += Math.max(
-    0,
-    (escapePower-50)/10
-  );
-
-  if(fieldSize>=16)pressure+=1;
-
-  if(pressure>=12){
-
-    return{
-      pace:'H',
-      flow:'差し・追込有利',
-      comment:
-        '前に行きたい馬が多く、二の脚も高め。前半のポジション争いが激しくなるハイペース想定。'
-    };
-
-  }
-
-  if(pressure<=5){
-
-    return{
-      pace:'S',
-      flow:'逃げ・先行有利',
-      comment:
-        '前に行く馬が少なく、ペースが落ち着きやすい。前受けできる馬を重視。'
-    };
-
-  }
-
-  return{
-
-    pace:'M',
-    flow:'展開フラット',
-
-    comment:
-      '極端な前傾・後傾にはなりにくい平均ペース想定。能力・位置取りをバランス評価。'
-
-  };
-
-}
-
-
-/* ----------------------------------
-   ペース補正
----------------------------------- */
-
-function paceBonus(h,pace){
-
-  let b=0;
-
-  if(pace==='H'){
-
-    if(h.style==='逃げ')b-=9;
-    if(h.style==='先行')b-=4;
-    if(h.style==='差し')b+=7;
-    if(h.style==='追込')b+=9;
-
-    /*
-      二の脚が低い逃げ・先行は
-      ハイペースでさらに減点
-    */
-
-    if(
-      (h.style==='逃げ'||h.style==='先行')
-      && h.second_leg<45
-    ){
-      b-=4;
-    }
-
-  }
-
-  if(pace==='M'){
-
-    if(h.style==='逃げ')b+=2;
-    if(h.style==='先行')b+=3;
-    if(h.style==='差し')b+=2;
-    if(h.style==='追込')b-=2;
-
-  }
-
-  if(pace==='S'){
-
-    if(h.style==='逃げ')b+=10;
-    if(h.style==='先行')b+=7;
-    if(h.style==='差し')b-=5;
-    if(h.style==='追込')b-=10;
-
-    /*
-      スローでは二の脚が高い前目の馬を評価
-    */
-
-    if(
-      (h.style==='逃げ'||h.style==='先行')
-      && h.second_leg>=70
-    ){
-      b+=3;
-    }
-
-  }
-
-  return b;
-
-}
-
-
-/* ----------------------------------
-   コース・距離・馬場補正
----------------------------------- */
-
-function courseBonus(h){
-
-  const course=$('course').value;
-  const distance=Number($('distance').value);
-  const surface=$('surface').value;
-  const going=$('going').value;
-
-  let b=0;
-
-  /*
-    短距離
-  */
-
-  if(distance<=1400){
-
-    b+=(h.second_leg-50)*0.12;
-
-    b+=(h.position-50)*0.10;
-
-  }
-
-
-  /*
-    マイル〜1800
-  */
-
-  if(distance>=1600 && distance<=1800){
-
-    b+=(h.training-50)*0.05;
-
-    b+=(h.position-50)*0.08;
-
-  }
-
-
-  /*
-    中長距離
-  */
-
-  if(distance>=2000){
-
-    b+=(h.training-50)*0.08;
-
-    b+=(h.pedigree-50)*0.08;
-
-  }
-
-
-  /*
-    ダート
-  */
-
-  if(surface==='ダート'){
-
-    b+=(h.position-50)*0.08;
-
-    b+=(h.second_leg-50)*0.05;
-
-  }
-
-
-  /*
-    芝
-  */
-
-  if(surface==='芝'){
-
-    b+=(h.training-50)*0.03;
-
-    b+=(h.pedigree-50)*0.03;
-
-  }
-
-
-  /*
-    馬場
-  */
-
-  if(going==='稍重'){
-
-    b+=(h.training-50)*0.04;
-
-  }
-
-  if(going==='重'){
-
-    b+=(h.training-50)*0.07;
-
-    b+=(h.pedigree-50)*0.03;
-
-  }
-
-  if(going==='不良'){
-
-    b+=(h.training-50)*0.10;
-
-    b+=(h.pedigree-50)*0.05;
-
-  }
-
-
-  /*
-    競馬場
-  */
-
-  if(course==='東京'){
-
-    b+=(h.position-50)*0.03;
-
-  }
-
-  if(course==='中山'){
-
-    b+=(h.position-50)*0.05;
-
-    b+=(h.second_leg-50)*0.03;
-
-  }
-
-  if(course==='京都'){
-
-    b+=(h.position-50)*0.02;
-
-  }
-
-  if(course==='阪神'){
-
-    b+=(h.training-50)*0.03;
-
-  }
-
-  if(course==='中京'){
-
-    b+=(h.training-50)*0.03;
-
-  }
-
-  if(course==='新潟'){
-
-    b+=(h.second_leg-50)*0.02;
-
-  }
-
-  if(course==='小倉'){
-
-    b+=(h.position-50)*0.04;
-
-  }
-
-  if(course==='福島'){
-
-    b+=(h.position-50)*0.04;
-
-    b+=(h.second_leg-50)*0.02;
-
-  }
-
-  if(course==='札幌'||course==='函館'){
-
-    b+=(h.training-50)*0.04;
-
-  }
-
-  return b;
-
-}
-
-
-/* ----------------------------------
-   人気馬補正
----------------------------------- */
-
-function favoriteBonus(h){
-
-  const mode=$('favoriteMode').value;
-
-  if(!h.odds)return 0;
-
-  /*
-    オッズが低い＝人気馬
-  */
-
-  if(h.odds<=3){
-
-    if(mode==='caution')return -3;
-
-    if(mode==='value')return -5;
-
-  }
-
-  return 0;
-
-}
-
-
-/* ----------------------------------
-   総合点
----------------------------------- */
-
-function scoreHorse(h,pace){
-
-  const base=
-
-    h.training*.30+
-    h.pedigree*.25+
-    h.position*.25+
-    h.second_leg*.20;
-
-  const paceAdj=
-    paceBonus(h,pace);
-
-  const courseAdj=
-    courseBonus(h);
-
-  const favoriteAdj=
-    favoriteBonus(h);
-
-  h.baseScore=base;
-  h.paceAdj=paceAdj;
-  h.courseAdj=courseAdj;
-  h.favoriteAdj=favoriteAdj;
-
-  return(
-    base+
-    paceAdj+
-    courseAdj+
-    favoriteAdj
-  );
-
-}
-
-
-/* ----------------------------------
-   評価理由
----------------------------------- */
-
-function makeReason(h,pace){
-
-  const reasons=[];
-
-  if(h.paceAdj>=7)
-    reasons.push('想定ペースが脚質に合う');
-
-  if(h.paceAdj<=-7)
-    reasons.push('想定ペースでは脚質が不利');
-
-  if(h.position>=75)
-    reasons.push('位置取り評価が高い');
-
-  if(h.second_leg>=75)
-    reasons.push('二の脚が高い');
-
-  if(h.training>=80)
-    reasons.push('調教評価が高い');
-
-  if(h.pedigree>=80)
-    reasons.push('血統評価が高い');
-
-  if(h.courseAdj>=7)
-    reasons.push('条件適性が高い');
-
-  if(h.courseAdj<=-5)
-    reasons.push('条件面でやや割引');
-
-  if(h.favoriteAdj<0)
-    reasons.push('人気馬として期待値を警戒');
-
-  if(!reasons.length)
-    reasons.push('総合評価でバランス型');
-
-  return reasons.join(' / ');
-
-}
-
-
-/* ----------------------------------
-   予想計算
----------------------------------- */
-
-function calculatePrediction(){
-
-  horses=readHorses();
-
-  if(!horses.length){
-
-    alert('まず馬名を入力してください。');
-
-    return;
-
-  }
-
-  const p=calcPace(horses);
-
-  horses.forEach(h=>{
-
-    h.score=
-      scoreHorse(h,p.pace);
-
-  });
-
-
-  /*
-    マイナス点防止
-  */
-
-  horses.forEach(h=>{
-
-    if(h.score<1)
-      h.score=1;
-
-  });
-
-
-  horses.sort(
-    (a,b)=>b.score-a.score
-  );
-
-
-  const total=
-    horses.reduce(
-      (s,h)=>s+h.score,
-      0
-    );
-
-
-  horses.forEach(h=>{
-
-    h.rate=
-      total>0
-      ?h.score/total*100
-      :100/horses.length;
-
-    h.ev=
-      h.odds>0
-      ?h.rate/100*h.odds*100
-      :0;
-
-  });
-
-
-  horses.forEach((h,i)=>{
-
-    h.mark=
-      i===0?'◎':
-      i===1?'○':
-      i===2?'▲':
-      i===3?'△':
-      i===4?'☆':'';
-
-    h.reason=
-      makeReason(h,p.pace);
-
-  });
-
-
-  renderPrediction(p);
-
-  renderPedigree();
-
-  renderValue();
-
-  setupTrack(horses);
-
-}
-
-
-/* ----------------------------------
-   予想表示
----------------------------------- */
-
-function renderPrediction(p){
-
-  $('count').textContent=
-    horses.length;
-
-  $('pace').textContent=
-    p.pace;
-
-  $('flow').textContent=
-    p.flow;
-
-  $('mainMark').textContent=
-    horses[0]
-    ?'◎ '+horses[0].name
-    :'—';
-
-  $('paceComment').textContent=
-    p.comment;
-
-
-  $('horses').innerHTML=
-    horses.map(h=>`
-
-      <div class="horse">
-
-        <div class="no">
-          ${h.no}
-        </div>
-
-        <div>
-
-          <div class="name">
-            ${h.mark} ${h.name}
-          </div>
-
-          <div class="sub">
-
-            ${h.style}
-
-            / 総合 ${h.score.toFixed(1)}
-
-            / 勝率 ${h.rate.toFixed(1)}%
-
-          </div>
-
-          <div class="sub">
-
-            基礎 ${h.baseScore.toFixed(1)}
-
-            / 展開
-            ${h.paceAdj>=0?'+':''}${h.paceAdj.toFixed(1)}
-
-            / 条件
-            ${h.courseAdj>=0?'+':''}${h.courseAdj.toFixed(1)}
-
-            ${h.favoriteAdj<0
-              ?`/ 人気警戒 ${h.favoriteAdj.toFixed(1)}`
-              :''
-            }
-
-          </div>
-
-          <div class="reason">
-            ${h.reason}
-          </div>
+    <div class="panel">
+
+        <h2>① レース選択</h2>
+
+        <div class="controls">
+
+            <div>
+                <label>開催日</label>
+                <input
+                    type="date"
+                    id="raceDate"
+                >
+            </div>
+
+            <div>
+                <label>競馬場</label>
+                <select id="course">
+                    <option value="01">札幌</option>
+                    <option value="02">函館</option>
+                    <option value="03">福島</option>
+                    <option value="04">新潟</option>
+                    <option value="05">東京</option>
+                    <option value="06">中山</option>
+                    <option value="07">中京</option>
+                    <option value="08">京都</option>
+                    <option value="09">阪神</option>
+                    <option value="10">小倉</option>
+                </select>
+            </div>
+
+            <div>
+                <label>レース番号</label>
+                <select id="raceNo">
+                    <option value="01">1R</option>
+                    <option value="02">2R</option>
+                    <option value="03">3R</option>
+                    <option value="04">4R</option>
+                    <option value="05">5R</option>
+                    <option value="06">6R</option>
+                    <option value="07">7R</option>
+                    <option value="08">8R</option>
+                    <option value="09">9R</option>
+                    <option value="10">10R</option>
+                    <option value="11">11R</option>
+                    <option value="12">12R</option>
+                </select>
+            </div>
 
         </div>
 
-        <div class="mark">
-          ${h.mark}
-        </div>
+        <br>
 
-        <div class="rate">
-          ${h.rate.toFixed(1)}%
-        </div>
+        <button onclick="loadRace()">
+            netkeibaから出馬表を取得
+        </button>
 
-        <div class="ev ${h.ev>=100?'good':h.ev>0?'warn':''}">
-          ${h.ev?h.ev.toFixed(0)+'%':'—'}
-        </div>
-
-      </div>
-
-    `).join('');
-
-}
-
-
-/* ----------------------------------
-   血統表示
----------------------------------- */
-
-function renderPedigree(){
-
-  $('pedigreeBox').innerHTML=
-
-    horses.map(h=>`
-
-      <div
-        style="
-          padding:10px 0;
-          border-bottom:1px solid var(--line)
-        "
-      >
-
-        <b>
-          ${h.mark}
-          ${h.no}.
-          ${h.name}
-        </b>
-
-        <div class="sub">
-          血統評価：
-          ${h.pedigree}
-        </div>
-
-        <div class="sub">
-          総合への血統寄与：
-          ${(h.pedigree*.25).toFixed(1)}
-        </div>
-
-        <div class="sub">
-          ※現段階ではユーザー入力による評価
-        </div>
-
-      </div>
-
-    `).join('');
-
-}
-
-
-/* ----------------------------------
-   期待値
----------------------------------- */
-
-function renderValue(){
-
-  const ranked=
-    [...horses]
-    .filter(h=>h.odds>0)
-    .sort((a,b)=>b.ev-a.ev);
-
-
-  if(!ranked.length){
-
-    $('valueBox').innerHTML=
-      '<div class="status">オッズを入力すると期待値を表示します。</div>';
-
-    return;
-
-  }
-
-
-  $('valueBox').innerHTML=
-
-    ranked.map((h,i)=>`
-
-      <div class="rank-row">
-
-        <div class="rank-head">
-
-          <b>
-            ${i+1}位
-            ${h.mark}
-            ${h.name}
-          </b>
-
-          <b class="${h.ev>=100?'good':'warn'}">
-            ${h.ev.toFixed(0)}%
-          </b>
-
+        <div id="status" class="status">
+            待機中
         </div>
 
         <div class="small">
+            ※ v0.5では公開されている出馬表データのみを取得します。
+        </div>
 
-          勝率 ${h.rate.toFixed(1)}%
+    </div>
 
-          × オッズ ${h.odds.toFixed(1)}
 
-          ＝ 期待値 ${h.ev.toFixed(0)}%
+    <div class="panel">
+
+        <h2>② 取得結果</h2>
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>枠</th>
+                        <th>馬番</th>
+                        <th>馬名</th>
+                        <th>性齢</th>
+                        <th>斤量</th>
+                        <th>騎手</th>
+                        <th>調教師</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="horseTable">
+
+                    <tr>
+                        <td colspan="7">
+                            まだデータがありません
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
 
         </div>
 
-        <div class="small" style="margin-top:5px">
-          ${h.reason}
-        </div>
+    </div>
 
-      </div>
+</div>
 
-    `).join('');
 
+<script>
+
+const API_URL = "http://localhost:8000/api/race";
+
+
+function setStatus(message, type = "") {
+
+    const status = document.getElementById("status");
+
+    status.textContent = message;
+
+    status.className = "status";
+
+    if (type) {
+        status.classList.add(type);
+    }
 }
 
 
-/* ----------------------------------
-   隊列
----------------------------------- */
+function getRaceData() {
 
-function setupTrack(hs){
+    const date =
+        document.getElementById("raceDate").value;
 
-  $('track').innerHTML='';
+    const course =
+        document.getElementById("course").value;
 
-  hs.forEach((h,i)=>{
+    const raceNo =
+        document.getElementById("raceNo").value;
 
-    const d=
-      document.createElement('div');
-
-    d.className='runner';
-
-    d.id='r'+i;
-
-    d.textContent=h.no;
-
-    const row=
-      Math.min(i,9);
-
-    d.style.top=
-      (15+row*40)+'px';
-
-    d.style.left=
-      (5+row*7)+'%';
-
-    $('track').appendChild(d);
-
-  });
-
-  animStep=0;
-
+    return {
+        date,
+        course,
+        raceNo
+    };
 }
 
 
-/* ----------------------------------
-   隊列アニメーション
----------------------------------- */
+async function loadRace() {
 
-function startAnim(){
+    const data = getRaceData();
 
-  stopAnim();
+    if (!data.date) {
 
-  animStep=0;
+        setStatus(
+            "開催日を入力してください。",
+            "error"
+        );
 
-  timer=setInterval(()=>{
-
-    animStep++;
-
-    const p=
-      animStep%5;
-
-    document
-      .querySelectorAll('.runner')
-      .forEach((r,i)=>{
-
-        const h=horses[i];
-
-        let left=
-          5+(i%10)*7;
-
-        let top=
-          15+(i%10)*40;
+        return;
+    }
 
 
-        if(p===1)
-          left+=12;
-
-        if(p===2)
-          left+=28;
-
-        if(p===3){
-
-          if(
-            h.style==='差し'||
-            h.style==='追込'
-          ){
-            left+=50;
-          }else{
-            left+=38;
-          }
-
-        }
-
-        if(p===4){
-
-          if(h.style==='追込')
-            left+=70;
-          else if(h.style==='差し')
-            left+=63;
-          else
-            left+=55;
-
-        }
-
-
-        r.style.left=
-          Math.min(left,88)+'%';
-
-        r.style.top=
-          top+'px';
-
-      });
-
-  },650/speed);
-
-}
-
-
-function stopAnim(){
-
-  if(timer){
-
-    clearInterval(timer);
-
-    timer=null;
-
-  }
-
-}
-
-
-function speedUp(){
-
-  speed=
-    Math.min(
-      3,
-      speed+0.5
+    setStatus(
+        "netkeibaからデータを取得しています..."
     );
 
-  if(timer)
-    startAnim();
+
+    document.getElementById("horseTable").innerHTML = `
+        <tr>
+            <td colspan="7">
+                取得中...
+            </td>
+        </tr>
+    `;
+
+
+    try {
+
+        const params = new URLSearchParams({
+            date: data.date,
+            course: data.course,
+            raceNo: data.raceNo
+        });
+
+
+        const response = await fetch(
+            `${API_URL}?${params.toString()}`
+        );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+
+        }
+
+
+        const result = await response.json();
+
+
+        if (!result.success) {
+
+            throw new Error(
+                result.error || "取得に失敗しました"
+            );
+
+        }
+
+
+        renderHorses(result.horses);
+
+
+        setStatus(
+            `取得成功\n${result.horses.length}頭を取得しました。`,
+            "success"
+        );
+
+
+        console.log(
+            "取得データ:",
+            result
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        setStatus(
+            "取得失敗\n\n" +
+            error.message +
+            "\n\n" +
+            "Pythonサーバーが起動しているか確認してください。",
+            "error"
+        );
+
+
+        document.getElementById("horseTable").innerHTML = `
+            <tr>
+                <td colspan="7">
+                    データ取得に失敗しました
+                </td>
+            </tr>
+        `;
+
+    }
 
 }
 
 
-/* ----------------------------------
-   検証保存
----------------------------------- */
+function renderHorses(horses) {
 
-function saveVerify(){
-
-  const data={
-
-    date:$('date').value,
-
-    course:$('course').value,
-
-    race:$('raceNo').value,
-
-    distance:$('distance').value,
-
-    surface:$('surface').value,
-
-    going:$('going').value,
-
-    pace:$('pace').textContent,
-
-    actual3f:$('actual3f').value,
-
-    memo:$('verifyMemo').value,
-
-    prediction:
-
-      horses.map(h=>({
-
-        no:h.no,
-
-        name:h.name,
-
-        mark:h.mark,
-
-        rate:h.rate,
-
-        score:h.score,
-
-        paceAdj:h.paceAdj,
-
-        courseAdj:h.courseAdj
-
-      })),
-
-    saved_at:
-      new Date().toISOString()
-
-  };
+    const tbody =
+        document.getElementById("horseTable");
 
 
-  localStorage.setItem(
-    'keiba_verify_v04',
-    JSON.stringify(data)
-  );
+    if (!horses || horses.length === 0) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7">
+                    出馬表データがありません
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
 
 
-  $('verifyStatus').textContent=
-    '検証結果をこの端末に保存しました。';
+    tbody.innerHTML = "";
 
-  $('verifyStatus').className=
-    'status ok';
+
+    horses.forEach(horse => {
+
+        const tr =
+            document.createElement("tr");
+
+
+        tr.innerHTML = `
+
+            <td>${escapeHtml(horse.frame)}</td>
+
+            <td>${escapeHtml(horse.number)}</td>
+
+            <td class="horse-name">
+                ${escapeHtml(horse.name)}
+            </td>
+
+            <td>${escapeHtml(horse.sexAge)}</td>
+
+            <td>${escapeHtml(horse.weight)}</td>
+
+            <td>${escapeHtml(horse.jockey)}</td>
+
+            <td>${escapeHtml(horse.trainer)}</td>
+
+        `;
+
+
+        tbody.appendChild(tr);
+
+    });
 
 }
 
 
-init();
+function escapeHtml(value) {
+
+    if (value === null || value === undefined) {
+        return "";
+    }
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+
+/*
+ * 今日の日付を初期値にする
+ */
+
+(function init() {
+
+    const today =
+        new Date();
+
+    const yyyy =
+        today.getFullYear();
+
+    const mm =
+        String(today.getMonth() + 1)
+            .padStart(2, "0");
+
+    const dd =
+        String(today.getDate())
+            .padStart(2, "0");
+
+
+    document.getElementById("raceDate").value =
+        `${yyyy}-${mm}-${dd}`;
+
+})();
 
 </script>
 
