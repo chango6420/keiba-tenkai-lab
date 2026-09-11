@@ -2,190 +2,233 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>競馬展開ラボ v0.9.5.1</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>競馬展開ラボ v1.0.0</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
+
 body{
   margin:0;
-  background:#f4f5f7;
-  color:#222;
-  font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  background:#0d1117;
+  color:#e6edf3;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
+
 header{
-  background:#111827;
-  color:white;
   padding:16px;
+  background:#161b22;
+  border-bottom:1px solid #30363d;
 }
-header h1{
-  margin:0;
+
+h1{
+  margin:0 0 5px;
   font-size:22px;
 }
-header p{
-  margin:5px 0 0;
+
+.sub{
+  color:#8b949e;
   font-size:12px;
-  color:#cbd5e1;
 }
-.container{
-  max-width:1100px;
-  margin:auto;
+
+main{
   padding:12px;
+  max-width:900px;
+  margin:auto;
 }
+
 .card{
-  background:white;
+  background:#161b22;
+  border:1px solid #30363d;
   border-radius:12px;
   padding:14px;
   margin-bottom:12px;
-  box-shadow:0 2px 8px rgba(0,0,0,.07);
 }
+
+h2{
+  font-size:17px;
+  margin:0 0 12px;
+}
+
 button{
   border:0;
   border-radius:8px;
-  padding:11px 14px;
-  background:#2563eb;
+  padding:10px 14px;
+  background:#238636;
   color:white;
   font-weight:bold;
-  cursor:pointer;
+  margin:3px;
 }
-button:disabled{
-  opacity:.5;
+
+button.secondary{
+  background:#30363d;
 }
-button.sub{
-  background:#64748b;
+
+button.danger{
+  background:#da3633;
 }
-button.green{
-  background:#059669;
-}
-button.red{
-  background:#dc2626;
-}
-input,select{
+
+select,
+input{
   width:100%;
   padding:10px;
-  border:1px solid #cbd5e1;
   border-radius:8px;
-  background:white;
+  border:1px solid #30363d;
+  background:#0d1117;
+  color:#e6edf3;
+  margin:5px 0 10px;
 }
-.row{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-}
-.tabs{
-  display:flex;
-  overflow-x:auto;
-  gap:6px;
-  margin-bottom:12px;
-}
-.tab{
-  white-space:nowrap;
-  background:#e5e7eb;
-  color:#111;
-}
-.tab.active{
-  background:#111827;
-  color:white;
-}
-.section{
-  display:none;
-}
-.section.active{
-  display:block;
-}
+
 .status{
   padding:10px;
+  background:#0d1117;
   border-radius:8px;
-  background:#f1f5f9;
+  color:#8b949e;
   font-size:13px;
-  margin-top:10px;
   white-space:pre-wrap;
 }
-.horse{
-  border:1px solid #e2e8f0;
-  border-radius:10px;
+
+.race{
   padding:12px;
-  margin-bottom:10px;
+  margin:8px 0;
+  background:#0d1117;
+  border:1px solid #30363d;
+  border-radius:10px;
 }
-.horse-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:8px;
+
+.race strong{
+  font-size:15px;
 }
+
+.horse{
+  padding:10px;
+  border-bottom:1px solid #30363d;
+}
+
+.horse:last-child{
+  border-bottom:0;
+}
+
 .horse-name{
-  font-size:17px;
   font-weight:bold;
 }
-.frame{
-  display:inline-block;
-  min-width:28px;
-  text-align:center;
-  border-radius:5px;
-  padding:3px 5px;
-  background:#e5e7eb;
-  font-weight:bold;
-  margin-right:6px;
-}
-.meta{
-  color:#64748b;
-  font-size:12px;
-  margin-top:5px;
-}
+
 .badge{
   display:inline-block;
-  background:#eef2ff;
-  color:#3730a3;
-  border-radius:999px;
-  padding:3px 8px;
+  padding:3px 7px;
+  margin-left:5px;
+  border-radius:5px;
   font-size:11px;
-  margin:2px;
+  background:#30363d;
 }
-.past{
-  margin-top:10px;
-  border-top:1px solid #e5e7eb;
-  padding-top:8px;
+
+.escape{
+  background:#9e6a03;
 }
-.past-row{
-  padding:7px 0;
-  border-bottom:1px solid #f1f5f9;
-  font-size:12px;
+
+.front{
+  background:#1f6feb;
 }
-details summary{
-  cursor:pointer;
-  font-weight:bold;
-  margin-top:8px;
+
+.stalker{
+  background:#238636;
 }
-.small{
-  font-size:11px;
-  color:#64748b;
+
+.closer{
+  background:#8957e5;
 }
+
+.row{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.row>*{
+  flex:1;
+  min-width:100px;
+}
+
 .big{
   font-size:20px;
   font-weight:bold;
 }
-.grid3{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
+
+.forecast{
+  font-size:16px;
+  line-height:1.8;
 }
-@media(max-width:600px){
-  .row,.grid3{
-    grid-template-columns:1fr;
-  }
+
+.warning{
+  color:#f2cc60;
 }
-table{
+
+.good{
+  color:#3fb950;
+}
+
+svg{
   width:100%;
-  border-collapse:collapse;
+  height:auto;
+  display:block;
+  background:#07130b;
+  border-radius:12px;
+}
+
+.track{
+  fill:none;
+  stroke:#d8d8d8;
+  stroke-width:55;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+.track-inner{
+  fill:none;
+  stroke:#777;
+  stroke-width:2;
+  stroke-dasharray:5 5;
+}
+
+.horse-token{
+  cursor:pointer;
+}
+
+.horse-circle{
+  stroke:#fff;
+  stroke-width:2;
+}
+
+.horse-number{
+  fill:#fff;
   font-size:12px;
+  font-weight:bold;
+  text-anchor:middle;
+  dominant-baseline:middle;
+  pointer-events:none;
 }
-th,td{
-  border-bottom:1px solid #e5e7eb;
-  padding:7px 5px;
-  text-align:left;
+
+.marker{
+  fill:#fff;
+  stroke:#111;
+  stroke-width:2;
 }
-th{
-  background:#f8fafc;
+
+.marker-text{
+  fill:#fff;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.controls{
+  text-align:center;
+}
+
+.small{
+  font-size:11px;
+  color:#8b949e;
 }
 </style>
 </head>
@@ -193,375 +236,327 @@ th{
 <body>
 
 <header>
-  <h1>🏇 競馬展開ラボ</h1>
-  <p>v0.9.5.1　過去走解析＋競馬場・芝ダート・馬場対応</p>
+  <h1>競馬展開ラボ</h1>
+  <div class="sub">v1.0.0｜逃げ予想・隊列予想・展開アニメーション</div>
 </header>
 
-<div class="container">
+<main>
 
-  <div class="card">
-    <div class="row">
-      <div>
-        <label>開催日</label>
-        <input id="kaisaiDate" type="date">
-      </div>
-      <div>
-        <label>レース</label>
-        <select id="raceSelect">
-          <option value="">開催レース取得後に選択</option>
-        </select>
-      </div>
-    </div>
+<div class="card">
+  <h2>① 開催取得</h2>
 
-    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
-      <button id="loadMeetingBtn">開催レース取得</button>
-      <button id="loadRaceBtn" class="green" disabled>出走馬取得</button>
-      <button id="analyzeBtn" class="sub" disabled>過去走を取得して脚質を解析</button>
-    </div>
+  <input id="dateInput" type="date">
 
-    <div id="status" class="status">待機中</div>
-  </div>
+  <button onclick="loadMeeting()">開催を取得</button>
 
-  <div class="tabs">
-    <button class="tab active" data-tab="prediction">予想</button>
-    <button class="tab" data-tab="formation">隊列</button>
-    <button class="tab" data-tab="pedigree">血統</button>
-    <button class="tab" data-tab="ev">期待値</button>
-    <button class="tab" data-tab="verify">検証</button>
-  </div>
+  <select id="raceSelect">
+    <option value="">レースを選択</option>
+  </select>
 
-  <section id="prediction" class="section active">
-    <div class="card">
-      <h2>予想</h2>
-      <div id="raceInfo">レース未取得</div>
-      <div id="horseList"></div>
-    </div>
-  </section>
+  <button onclick="loadRace()">出馬表を取得</button>
 
-  <section id="formation" class="section">
-    <div class="card">
-      <h2>隊列</h2>
-      <div id="formationBox">
-        過去走解析後に隊列を表示します。
-      </div>
-    </div>
-  </section>
-
-  <section id="pedigree" class="section">
-    <div class="card">
-      <h2>血統</h2>
-      <div id="pedigreeBox">
-        血統情報は今後拡張予定。
-      </div>
-    </div>
-  </section>
-
-  <section id="ev" class="section">
-    <div class="card">
-      <h2>期待値</h2>
-      <p class="small">
-        現在は各馬の人気・オッズを取得し、入力した勝率から簡易期待値を計算します。
-      </p>
-      <div id="evBox"></div>
-    </div>
-  </section>
-
-  <section id="verify" class="section">
-    <div class="card">
-      <h2>検証</h2>
-      <p class="small">予想結果を端末内に保存します。</p>
-
-      <div class="row">
-        <input id="verifyRace" placeholder="レース名">
-        <input id="verifyWinner" placeholder="勝ち馬">
-      </div>
-
-      <button id="saveVerifyBtn" style="margin-top:10px">
-        検証結果を保存
-      </button>
-
-      <div id="verifyList" style="margin-top:12px"></div>
-    </div>
-  </section>
-
+  <div id="status" class="status">待機中</div>
 </div>
+
+
+<div class="card">
+  <h2>② 今回の逃げ予想</h2>
+
+  <div id="escapeForecast" class="forecast">
+    まだ解析していません。
+  </div>
+</div>
+
+
+<div class="card">
+  <h2>③ 想定隊列</h2>
+
+  <div id="formation">
+    まだ解析していません。
+  </div>
+</div>
+
+
+<div class="card">
+  <h2>④ 展開アニメーション</h2>
+
+  <div class="controls">
+    <button onclick="playAnimation()">▶ 再生</button>
+    <button class="secondary" onclick="pauseAnimation()">Ⅱ 一時停止</button>
+    <button class="secondary" onclick="resetAnimation()">↺ リセット</button>
+    <br>
+    <button class="secondary" onclick="setSpeed(0.5)">0.5倍</button>
+    <button class="secondary" onclick="setSpeed(1)">1倍</button>
+    <button class="secondary" onclick="setSpeed(2)">2倍</button>
+  </div>
+
+  <div id="courseInfo" class="small" style="margin:10px 0">
+    コース未設定
+  </div>
+
+  <div id="course"></div>
+</div>
+
+
+<div class="card">
+  <h2>⑤ 各馬分析</h2>
+
+  <div id="horses">
+    まだ出馬表を取得していません。
+  </div>
+</div>
+
+</main>
+
 
 <script>
 
-"use strict";
+const JINA="https://r.jina.ai/";
 
-/* =========================================================
-   基本設定
-========================================================= */
+let horses=[];
+let raceId="";
+let raceText="";
+let raceInfo={};
 
-const statusEl = document.getElementById("status");
-const raceSelect = document.getElementById("raceSelect");
-const loadMeetingBtn = document.getElementById("loadMeetingBtn");
-const loadRaceBtn = document.getElementById("loadRaceBtn");
-const analyzeBtn = document.getElementById("analyzeBtn");
+let animationFrame=null;
+let animationStart=0;
+let animationPausedAt=0;
+let animationRunning=false;
+let animationSpeed=1;
 
-let races = [];
-let horses = [];
-let currentRace = null;
+let svgState=null;
 
-/* =========================================================
-   Jina Reader
-========================================================= */
+
+/* =========================
+   基本
+========================= */
+
+function clean(v){
+  return String(v ?? "")
+    .replace(/<[^>]*>/g," ")
+    .replace(/\[[^\]]*\]/g," ")
+    .replace(/\s+/g," ")
+    .trim();
+}
+
+function setStatus(text){
+  document.getElementById("status").textContent=text;
+}
 
 async function jinaFetch(url){
-  const readerUrl = "https://r.jina.ai/" + url;
 
-  const response = await fetch(readerUrl);
+  const response=await fetch(JINA+url);
 
   if(!response.ok){
-    throw new Error("Jina HTTP " + response.status);
+    throw new Error("Jina HTTP "+response.status);
   }
 
   return await response.text();
 }
 
-/* =========================================================
-   共通
-========================================================= */
 
-function clean(value){
-  if(value === undefined || value === null) return "";
-  return String(value)
-    .replace(/\u00a0/g," ")
-    .replace(/\s+/g," ")
-    .trim();
-}
-
-function escapeHtml(value){
-  return String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-}
-
-/* =========================================================
-   開催レース取得
-   ※ v0.9.4系の取得方式を維持
-========================================================= */
+/* =========================
+   開催取得
+========================= */
 
 async function loadMeeting(){
 
-  const date = document.getElementById("kaisaiDate").value;
+  const date=document.getElementById("dateInput").value;
 
   if(!date){
-    setStatus("開催日を選択してください。");
+    setStatus("日付を選択してください");
     return;
   }
 
-  setStatus("開催レースを取得中...");
-
-  loadMeetingBtn.disabled = true;
-
   try{
 
-    const url =
-      "https://race.netkeiba.com/top/race_list.html?kaisai_date=" +
-      date.replace(/-/g,"");
+    setStatus("開催情報を取得中…");
 
-    const text = await jinaFetch(url);
+    const url=
+      "https://race.netkeiba.com/top/race_list.html?kaisai_date="
+      +date.replaceAll("-","");
 
-    const ids = [
-      ...new Set(
-        [...text.matchAll(/race_id=(\d{12})/g)]
-          .map(m => m[1])
-      )
-    ];
+    const text=await jinaFetch(url);
 
-    if(!ids.length){
-      throw new Error("race_idを取得できませんでした。");
-    }
+    const ids=[
+      ...text.matchAll(/race_id=(\d{12})/g)
+    ].map(m=>m[1]);
 
-    races = [];
+    const unique=[...new Set(ids)];
 
-    for(let i=0;i<ids.length;i++){
+    const select=document.getElementById("raceSelect");
 
-      const id = ids[i];
+    select.innerHTML=
+      '<option value="">レースを選択</option>';
 
-      races.push({
-        id:id,
-        label:"Race " + (i+1) + "　" + id
-      });
-    }
+    unique.forEach(id=>{
 
-    raceSelect.innerHTML =
-      '<option value="">レースを選択してください</option>' +
-      races.map((race,index) =>
-        `<option value="${race.id}">
-          ${escapeHtml(String(index+1).padStart(2,"0"))}R　${race.id}
-        </option>`
-      ).join("");
+      const option=document.createElement("option");
 
-    loadRaceBtn.disabled = false;
+      option.value=id;
+
+      const raceNo=Number(id.slice(-2));
+
+      option.textContent=
+        id+"｜"+raceNo+"R";
+
+      select.appendChild(option);
+
+    });
 
     setStatus(
-      "開催レース取得完了\n" +
-      races.length + "レース見つかりました。"
+      "開催取得完了\n"+
+      unique.length+
+      "件のレースIDを取得しました"
     );
 
-  }catch(error){
+  }catch(e){
 
-    console.error(error);
+    console.error(e);
 
     setStatus(
-      "開催レース取得に失敗しました。\n" +
-      error.message
+      "開催取得失敗\n"+
+      e.message
     );
-
-  }finally{
-
-    loadMeetingBtn.disabled = false;
-
   }
 }
 
-/* =========================================================
-   出走馬取得
-========================================================= */
+
+/* =========================
+   出馬表
+========================= */
 
 async function loadRace(){
 
-  const raceId = raceSelect.value;
+  raceId=document.getElementById("raceSelect").value;
 
   if(!raceId){
-    setStatus("レースを選択してください。");
+    setStatus("レースを選択してください");
     return;
   }
 
-  setStatus("出走馬を取得中...");
-
-  loadRaceBtn.disabled = true;
-
   try{
 
-    const url =
-      "https://race.netkeiba.com/race/shutuba.html?race_id=" +
-      raceId;
+    setStatus("出馬表を取得中…");
 
-    const text = await jinaFetch(url);
+    const url=
+      "https://race.netkeiba.com/race/shutuba.html?race_id="
+      +raceId;
 
-    horses = parseHorses(text);
+    raceText=await jinaFetch(url);
 
-    currentRace = {
-      id:raceId,
-      url:url
-    };
+    horses=parseShutuba(raceText);
+
+    parseRaceHeader(raceText);
 
     if(!horses.length){
-      throw new Error("出走馬を取得できませんでした。");
+
+      setStatus(
+        "出馬表を取得しましたが、馬を解析できませんでした"
+      );
+
+      return;
     }
 
-    renderRaceInfo();
+    setStatus(
+      "出馬表取得完了\n"+
+      horses.length+
+      "頭"
+    );
+
     renderHorses();
-    renderEV();
 
-    analyzeBtn.disabled = false;
+    await loadPastNine();
 
-    setStatus(
-      "出走馬取得完了\n" +
-      horses.length + "頭取得しました。"
-    );
+  }catch(e){
 
-  }catch(error){
-
-    console.error(error);
+    console.error(e);
 
     setStatus(
-      "出走馬取得に失敗しました。\n" +
-      error.message
+      "レース取得失敗\n"+
+      e.message
     );
-
-  }finally{
-
-    loadRaceBtn.disabled = false;
-
   }
 }
 
-/* =========================================================
-   出走馬パース
-========================================================= */
 
-function parseHorses(text){
+/* =========================
+   出馬表解析
+========================= */
 
-  const lines = text.split(/\r?\n/);
+function parseShutuba(text){
 
-  const result = [];
+  const result=[];
+  const seen=new Set();
+
+  const lines=text.split(/\r?\n/);
 
   for(const line of lines){
 
     if(!line.includes("|")) continue;
 
-    const cells =
-      line.split("|").map(x => clean(x));
+    const cells=line
+      .split("|")
+      .map(x=>clean(x));
 
-    if(cells.length < 8) continue;
+    if(cells.length<8) continue;
 
-    const frame =
-      Number(cells[1]);
+    let frame=Number(cells[1]);
+    let number=Number(cells[2]);
 
-    const number =
-      Number(cells[2]);
+    if(
+      !Number.isInteger(frame) ||
+      frame<1 ||
+      frame>8
+    ) continue;
 
-    if(!Number.isInteger(frame) ||
-       frame < 1 ||
-       frame > 8){
-      continue;
-    }
+    if(
+      !Number.isInteger(number) ||
+      number<1 ||
+      number>18
+    ) continue;
 
-    if(!Number.isInteger(number) ||
-       number < 1 ||
-       number > 18){
-      continue;
-    }
-
-    const titleMatch =
+    const titleMatch=
       line.match(
         /db\.netkeiba\.com\/horse\/\d+\s+"([^"]+)"/
       );
 
     if(!titleMatch) continue;
 
-    const name = clean(titleMatch[1]);
+    const name=clean(titleMatch[1]);
 
-    const odds =
-      Number(clean(cells[10] || ""));
+    if(!name) continue;
 
-    const popularity =
-      Number(clean(cells[11] || ""));
+    if(seen.has(number)) continue;
 
-    const horseIdMatch =
-      line.match(
-        /db\.netkeiba\.com\/horse\/(\d+)/
+    seen.add(number);
+
+    let odds=0;
+    let popularity=0;
+
+    for(let i=0;i<cells.length;i++){
+
+      const n=Number(
+        cells[i].replace(/[^0-9.]/g,"")
       );
 
-    const horseId =
-      horseIdMatch ? horseIdMatch[1] : "";
-
-    const horseUrl =
-      horseId
-        ? "https://db.netkeiba.com/horse/" + horseId + "/"
-        : "";
+      if(
+        n>0 &&
+        n<1000 &&
+        i>5
+      ){
+        if(!odds) odds=n;
+      }
+    }
 
     result.push({
+
       frame,
       number,
       name,
-      odds:Number.isFinite(odds) ? odds : 0,
-      popularity:
-        Number.isFinite(popularity)
-          ? popularity
-          : 0,
-      horseId,
-      horseUrl,
 
-      style:"",
+      style:"不明",
+
       styleScore:{
         escape:0,
         front:0,
@@ -570,150 +565,43 @@ function parseHorses(text){
       },
 
       confidence:0,
-      pastRaces:[]
+
+      past:[],
+
+      odds,
+      popularity,
+
+      netkeibaPosition:{
+        start:"",
+        corner3:"",
+        corner4:""
+      },
+
+      predictedGroup:"中団",
+
+      escapeScore:0
+
     });
+
   }
 
-  const unique = [];
-  const used = new Set();
+  result.sort((a,b)=>a.number-b.number);
 
-  for(const horse of result){
-
-    if(used.has(horse.number)) continue;
-
-    used.add(horse.number);
-    unique.push(horse);
-  }
-
-  unique.sort((a,b) => a.number - b.number);
-
-  return unique;
+  return result;
 }
 
-/* =========================================================
-   過去走ヘッダー検出
-========================================================= */
 
-function findHeaderRow(lines){
+/* =========================
+   レース情報
+========================= */
 
-  for(const line of lines){
+function parseRaceHeader(text){
 
-    if(!line.includes("|")) continue;
+  const lines=text.split(/\r?\n/);
 
-    const cells =
-      line.split("|").map(x => clean(x));
+  let course="";
 
-    const joined = cells.join("|");
-
-    if(
-      joined.includes("日付") &&
-      joined.includes("着順") &&
-      joined.includes("距離") &&
-      joined.includes("通過")
-    ){
-      return cells;
-    }
-  }
-
-  return null;
-}
-
-/* =========================================================
-   列位置取得
-========================================================= */
-
-function getColumnIndexes(header){
-
-  function find(names){
-
-    for(const name of names){
-
-      const index =
-        header.findIndex(
-          cell => cell === name ||
-                  cell.includes(name)
-        );
-
-      if(index >= 0) return index;
-    }
-
-    return -1;
-  }
-
-  return {
-    date:find(["日付"]),
-    course:find(["開催"]),
-    finish:find(["着順"]),
-    distance:find(["距離"]),
-    going:find(["馬場"]),
-    position:find(["通過"]),
-    raceName:find(["レース名"])
-  };
-}
-
-/* =========================================================
-   着順
-========================================================= */
-
-function parseFinish(value){
-
-  const text = clean(value);
-
-  const match =
-    text.match(/^(\d{1,2})(?:着)?$/);
-
-  if(!match) return 0;
-
-  const n = Number(match[1]);
-
-  if(n < 1 || n > 18) return 0;
-
-  return n;
-}
-
-/* =========================================================
-   距離＋芝ダート
-========================================================= */
-
-function parseDistanceInfo(value){
-
-  const text = clean(value);
-
-  let surface = "";
-
-  if(/ダート|ダ/.test(text)){
-    surface = "ダート";
-  }else if(/芝/.test(text)){
-    surface = "芝";
-  }else if(/障/.test(text)){
-    surface = "障害";
-  }
-
-  const match =
-    text.match(/(\d{3,4})/);
-
-  const distance =
-    match ? Number(match[1]) : 0;
-
-  return {
-    surface,
-    distance
-  };
-}
-
-/* =========================================================
-   競馬場
-   例：
-   4中山1 → 中山
-   3東京5 → 東京
-   笠松 → 笠松
-========================================================= */
-
-function parseCourse(value){
-
-  const text = clean(value);
-
-  const courses = [
+  const venues=[
     "札幌",
     "函館",
     "福島",
@@ -723,1036 +611,1584 @@ function parseCourse(value){
     "中京",
     "京都",
     "阪神",
-    "小倉",
-    "門別",
-    "盛岡",
-    "水沢",
-    "浦和",
-    "船橋",
-    "大井",
-    "川崎",
-    "金沢",
-    "笠松",
-    "名古屋",
-    "園田",
-    "姫路",
-    "高知",
-    "佐賀"
+    "小倉"
   ];
-
-  for(const course of courses){
-
-    if(text.includes(course)){
-      return course;
-    }
-  }
-
-  return text
-    .replace(/[0-9]/g,"")
-    .trim();
-}
-
-/* =========================================================
-   芝・ダート
-========================================================= */
-
-function parseSurface(value){
-
-  const text = clean(value);
-
-  if(/ダート|ダ/.test(text)){
-    return "ダート";
-  }
-
-  if(/芝/.test(text)){
-    return "芝";
-  }
-
-  if(/障/.test(text)){
-    return "障害";
-  }
-
-  return "";
-}
-
-/* =========================================================
-   馬場
-========================================================= */
-
-function parseGoing(value){
-
-  const text = clean(value);
-
-  if(text.includes("不良")) return "不良";
-  if(text.includes("重")) return "重";
-  if(text.includes("稍")) return "稍重";
-  if(text.includes("良")) return "良";
-
-  return "";
-}
-
-/* =========================================================
-   日付
-========================================================= */
-
-function parseRaceDate(value){
-
-  const text = clean(value);
-
-  if(
-    /^\d{4}\/\d{1,2}\/\d{1,2}$/.test(text) ||
-    /^\d{4}\.\d{1,2}\.\d{1,2}$/.test(text)
-  ){
-    return text;
-  }
-
-  return "";
-}
-
-/* =========================================================
-   過去走解析
-   ★固定列方式
-========================================================= */
-
-function parsePastRaces(text){
-
-  const lines =
-    text.split(/\r?\n/);
-
-  const header =
-    findHeaderRow(lines);
-
-  if(!header){
-    console.warn("過去走ヘッダーが見つかりません");
-    return [];
-  }
-
-  const indexes =
-    getColumnIndexes(header);
-
-  if(
-    indexes.date < 0 ||
-    indexes.finish < 0 ||
-    indexes.distance < 0 ||
-    indexes.position < 0
-  ){
-    console.warn(
-      "必要な列が見つかりません",
-      indexes
-    );
-
-    return [];
-  }
-
-  const races = [];
-
-  const maxIndex =
-    Math.max(
-      indexes.date,
-      indexes.course,
-      indexes.finish,
-      indexes.distance,
-      indexes.going,
-      indexes.position,
-      indexes.raceName
-    );
 
   for(const line of lines){
 
-    if(!line.includes("|")) continue;
+    const c=clean(line);
 
-    const cells =
-      line.split("|").map(x => clean(x));
+    for(const v of venues){
 
-    /*
-      ヘッダー以下のデータ行で、
-      必要列まで存在するものだけ処理。
-      これで「1行ずつ結果がズレる」問題を防ぐ。
-    */
-    if(cells.length <= maxIndex) continue;
+      if(c.includes(v)){
+
+        course=v;
+        break;
+      }
+    }
+
+    if(course) break;
+  }
+
+  let surface="";
+
+  if(
+    text.includes("芝")
+  ){
+    surface="芝";
+  }
+
+  if(
+    text.includes("ダート") ||
+    text.includes("ダ ")
+  ){
+    surface="ダート";
+  }
+
+  let distance=0;
+
+  const matches=[
+    ...text.matchAll(
+      /(?:芝|ダート|ダ)[^\d]{0,5}(\d{3,4})m/g
+    )
+  ];
+
+  if(matches.length){
+    distance=Number(matches[0][1]);
+  }
+
+  if(!distance){
+
+    const m=text.match(
+      /\b(1000|1100|1150|1200|1300|1400|1500|1600|1700|1800|1900|2000|2100|2200|2300|2400|2500|2600|2800|3000|3200|3400|3600)\b/
+    );
+
+    if(m){
+      distance=Number(m[1]);
+    }
+  }
+
+  raceInfo={
+    course,
+    surface,
+    distance
+  };
+}
+
+
+/* =========================
+   過去9走を一括取得
+========================= */
+
+async function loadPastNine(){
+
+  try{
+
+    setStatus(
+      "過去走9走を一括取得中…"
+    );
+
+    const url=
+      "https://race.netkeiba.com/race/shutuba_past_9.html?race_id="
+      +raceId;
+
+    const text=await jinaFetch(url);
+
+    const parsed=parsePastNine(text);
+
+    if(!parsed.length){
+
+      setStatus(
+        "過去走ページは取得しましたが、\n"+
+        "過去走を解析できませんでした"
+      );
+
+      return;
+    }
+
+    for(const horse of horses){
+
+      const data=parsed.find(
+        x=>x.number===horse.number
+      );
+
+      if(data){
+
+        horse.past=data.past;
+
+        analyseHorse(horse);
+      }
+    }
+
+    parseNetkeibaFormation(text);
+
+    analyseFormation();
+
+    renderHorses();
+
+    renderForecast();
+
+    renderFormation();
+
+    renderCourse();
+
+    setStatus(
+      "解析完了\n"+
+      horses.length+
+      "頭\n"+
+      "過去走解析："+parsed.length+"頭"
+    );
+
+  }catch(e){
+
+    console.error(e);
+
+    setStatus(
+      "過去走解析失敗\n"+
+      e.message
+    );
+  }
+}
+
+
+/* =========================
+   過去9走解析
+========================= */
+
+function parsePastNine(text){
+
+  const result=[];
+
+  const lines=text.split(/\r?\n/);
+
+  let currentHorse=null;
+
+  for(let i=0;i<lines.length;i++){
+
+    const line=lines[i];
+
+    const numberMatch=
+      line.match(
+        /(?:^|\|)\s*(\d{1,2})\s*(?:\||$)/
+      );
 
     if(
-      cells[indexes.date] ===
-      header[indexes.date]
+      numberMatch &&
+      Number(numberMatch[1])>=1 &&
+      Number(numberMatch[1])<=18
+    ){
+
+      const n=Number(numberMatch[1]);
+
+      if(
+        !currentHorse ||
+        currentHorse.number!==n
+      ){
+
+        currentHorse={
+          number:n,
+          past:[]
+        };
+
+        result.push(currentHorse);
+      }
+    }
+
+    if(!currentHorse) continue;
+
+    if(!line.includes("|")) continue;
+
+    const cells=line
+      .split("|")
+      .map(x=>clean(x));
+
+    if(cells.length<5) continue;
+
+    const dateIndex=cells.findIndex(
+      x=>/^\d{4}[\/.]\d{1,2}[\/.]\d{1,2}$/.test(x)
+    );
+
+    if(dateIndex<0) continue;
+
+    const date=cells[dateIndex];
+
+    let finish=0;
+
+    for(
+      let j=dateIndex+1;
+      j<Math.min(cells.length,dateIndex+15);
+      j++
+    ){
+
+      const value=cells[j];
+
+      const m=value.match(
+        /^(\d{1,2})(?:着)?$/
+      );
+
+      if(m){
+
+        const n=Number(m[1]);
+
+        if(n>=1 && n<=18){
+
+          finish=n;
+          break;
+        }
+      }
+    }
+
+    let distance=0;
+    let surface="";
+    let going="";
+    let course="";
+
+    for(
+      let j=dateIndex;
+      j<Math.min(cells.length,dateIndex+25);
+      j++
+    ){
+
+      const value=cells[j];
+
+      const dm=
+        value.match(
+          /(芝|ダート|ダ|障)[^\d]{0,3}(\d{3,4})/
+        );
+
+      if(dm){
+
+        surface=
+          dm[1]==="芝"
+          ? "芝"
+          : dm[1].includes("ダ")
+          ? "ダート"
+          : "障害";
+
+        distance=Number(dm[2]);
+      }
+
+      if(
+        value==="良" ||
+        value==="稍重" ||
+        value==="重" ||
+        value==="不良"
+      ){
+        going=value;
+      }
+    }
+
+    const positionCandidates=[];
+
+    for(
+      let j=dateIndex;
+      j<Math.min(cells.length,dateIndex+30);
+      j++
+    ){
+
+      const value=cells[j];
+
+      if(
+        /^\d+(?:-\d+)+$/.test(value)
+      ){
+
+        positionCandidates.push(value);
+      }
+    }
+
+    const position=
+      positionCandidates.length
+      ? positionCandidates[0]
+      : "";
+
+    if(
+      currentHorse.past.some(
+        x=>x.date===date &&
+        x.position===position
+      )
     ){
       continue;
     }
 
-    const date =
-      parseRaceDate(
-        cells[indexes.date]
-      );
+    if(
+      finish ||
+      position ||
+      distance
+    ){
 
-    const finish =
-      parseFinish(
-        cells[indexes.finish]
-      );
+      currentHorse.past.push({
 
-    const position =
-      clean(
-        cells[indexes.position]
-      );
+        date,
+        finish,
+        position,
+        distance,
+        surface,
+        going,
+        course
 
-    const distanceInfo =
-      parseDistanceInfo(
-        cells[indexes.distance]
-      );
+      });
 
-    const course =
-      indexes.course >= 0
-        ? parseCourse(
-            cells[indexes.course]
-          )
-        : "";
-
-    const surface =
-      distanceInfo.surface ||
-      (
-        indexes.distance >= 0
-          ? parseSurface(
-              cells[indexes.distance]
-            )
-          : ""
-      );
-
-    const distance =
-      distanceInfo.distance;
-
-    const going =
-      indexes.going >= 0
-        ? parseGoing(
-            cells[indexes.going]
-          )
-        : "";
-
-    const raceName =
-      indexes.raceName >= 0
-        ? clean(
-            cells[indexes.raceName]
-          )
-        : "";
-
-    /*
-      日付・着順・通過の最低条件。
-      距離だけ別の数字を拾うことはしない。
-    */
-    if(!date) continue;
-    if(!finish) continue;
-    if(!position) continue;
-
-    races.push({
-      date,
-      finish,
-      position,
-      distance,
-      course,
-      surface,
-      going,
-      raceName
-    });
+      if(
+        currentHorse.past.length>=9
+      ){
+        continue;
+      }
+    }
   }
 
-  const unique = [];
-  const used = new Set();
-
-  for(const race of races){
-
-    const key =
-      [
-        race.date,
-        race.finish,
-        race.position,
-        race.distance,
-        race.course,
-        race.surface,
-        race.going
-      ].join("|");
-
-    if(used.has(key)) continue;
-
-    used.add(key);
-    unique.push(race);
-  }
-
-  return unique.slice(0,10);
+  return result;
 }
 
-/* =========================================================
-   通過順 → 脚質
-========================================================= */
 
-function classifyStyle(position){
+/* =========================
+   脚質分析
+========================= */
 
-  if(!position) return "";
+function classifyPosition(position){
 
-  const first =
-    Number(
-      String(position)
-        .split("-")[0]
-    );
+  if(!position) return "不明";
 
-  if(!Number.isFinite(first)){
-    return "";
-  }
+  const nums=
+    position
+      .split("-")
+      .map(Number)
+      .filter(Boolean);
 
-  if(first === 1){
-    return "逃げ";
-  }
+  if(!nums.length) return "不明";
 
-  if(first <= 3){
-    return "先行";
-  }
+  const first=nums[0];
 
-  if(first <= 6){
-    return "差し";
-  }
+  if(first===1) return "逃げ";
+
+  if(first<=3) return "先行";
+
+  if(first<=6) return "差し";
 
   return "追込";
 }
 
-/* =========================================================
-   脚質スコア
-========================================================= */
 
-function analyzeStyle(races){
+function analyseHorse(horse){
 
-  const scores = {
-    escape:0,
-    front:0,
-    stalker:0,
-    closer:0
-  };
+  const races=
+    horse.past
+      .filter(x=>x.position)
+      .slice(0,9);
 
-  const recent =
-    races.slice(0,10);
+  if(!races.length){
 
-  recent.forEach((race,index)=>{
+    horse.style="不明";
+    horse.confidence=0;
+    horse.escapeScore=0;
 
-    const weight =
-      index < 3
-        ? 3
-        : index < 6
-          ? 2
-          : 1;
-
-    const style =
-      classifyStyle(
-        race.position
-      );
-
-    if(style === "逃げ"){
-      scores.escape += weight;
-    }
-
-    if(style === "先行"){
-      scores.front += weight;
-    }
-
-    if(style === "差し"){
-      scores.stalker += weight;
-    }
-
-    if(style === "追込"){
-      scores.closer += weight;
-    }
-  });
-
-  const entries =
-    Object.entries(scores)
-      .sort((a,b)=>b[1]-a[1]);
-
-  const winner =
-    entries[0];
-
-  const second =
-    entries[1];
-
-  let style = "不明";
-
-  if(winner[1] > 0){
-
-    if(winner[0] === "escape"){
-      style = "逃げ";
-    }else if(winner[0] === "front"){
-      style = "先行";
-    }else if(winner[0] === "stalker"){
-      style = "差し";
-    }else if(winner[0] === "closer"){
-      style = "追込";
-    }
+    return;
   }
 
-  let confidence = 0;
+  let escape=0;
+  let front=0;
+  let stalker=0;
+  let closer=0;
 
-  const total =
-    entries.reduce(
-      (sum,item)=>sum+item[1],
-      0
-    );
+  races.forEach((race,index)=>{
 
-  if(total > 0){
+    const weight=
+      index===0 ? 5 :
+      index===1 ? 4 :
+      index===2 ? 3 :
+      2;
 
-    const dominance =
-      winner[1] / total;
+    const style=
+      classifyPosition(race.position);
 
-    const separation =
-      winner[1] - second[1];
+    if(style==="逃げ"){
+      escape+=weight;
+    }
 
-    confidence =
+    if(style==="先行"){
+      front+=weight;
+    }
+
+    if(style==="差し"){
+      stalker+=weight;
+    }
+
+    if(style==="追込"){
+      closer+=weight;
+    }
+
+  });
+
+  horse.styleScore={
+    escape,
+    front,
+    stalker,
+    closer
+  };
+
+  const scores=[
+    ["逃げ",escape],
+    ["先行",front],
+    ["差し",stalker],
+    ["追込",closer]
+  ];
+
+  scores.sort((a,b)=>b[1]-a[1]);
+
+  horse.style=scores[0][0];
+
+  const total=
+    escape+
+    front+
+    stalker+
+    closer;
+
+  if(total){
+
+    horse.confidence=
       Math.round(
-        dominance * 60 +
-        Math.min(
-          separation * 4,
-          25
-        ) +
-        Math.min(
-          races.length * 2,
-          15
-        )
+        scores[0][1]/total*100
       );
   }
 
   /*
-    データが少ない場合は過信させない
-  */
-  if(races.length <= 1){
-    confidence =
-      Math.min(confidence,35);
-  }else if(races.length <= 3){
-    confidence =
-      Math.min(confidence,55);
-  }
+   * 逃げ能力スコア
+   *
+   * 単純な逃げ回数ではなく
+   * 直近を強く評価
+   */
 
-  return {
-    style,
-    scores,
-    confidence
-  };
-}
+  horse.escapeScore=
+    escape*1.8+
+    front*0.75;
 
-/* =========================================================
-   全頭過去走取得
-========================================================= */
+  /*
+   * 直近で1角1番手なら加点
+   */
 
-async function analyzeAllHorses(){
+  races.slice(0,3).forEach(
+    (race,index)=>{
 
-  if(!horses.length){
-    setStatus("先に出走馬を取得してください。");
-    return;
-  }
+      const nums=
+        race.position
+          .split("-")
+          .map(Number);
 
-  analyzeBtn.disabled = true;
+      if(
+        nums[0]===1
+      ){
 
-  let success = 0;
-
-  setStatus(
-    "過去走解析開始...\n" +
-    "0 / " + horses.length
-  );
-
-  for(let i=0;i<horses.length;i++){
-
-    const horse =
-      horses[i];
-
-    try{
-
-      if(!horse.horseUrl){
-        continue;
+        horse.escapeScore+=
+          10-index*2;
       }
 
-      /*
-        v0.9.4で動作していたURLを維持
-      */
-      const text =
-        await jinaFetch(
-          horse.horseUrl
-        );
+    }
+  );
 
-      const pastRaces =
-        parsePastRaces(text);
+  /*
+   * 逃げ経験が全くない馬は
+   * 逃げ候補として大きく下げる
+   */
 
-      horse.pastRaces =
-        pastRaces;
+  if(escape===0){
 
-      const analysis =
-        analyzeStyle(
-          pastRaces
-        );
+    horse.escapeScore*=0.35;
+  }
 
-      horse.style =
-        analysis.style;
+}
 
-      horse.styleScore =
-        analysis.scores;
 
-      horse.confidence =
-        analysis.confidence;
+/* =========================
+   netkeiba展開予想
+========================= */
 
-      success++;
+function parseNetkeibaFormation(text){
 
-    }catch(error){
+  /*
+   * ページ内に
+   * 逃 / 先行 / 差 / 追込
+   * が存在する場合に拾う。
+   *
+   * HTMLを直接依存しすぎないよう
+   * 馬番周辺の文字列を調査する。
+   */
 
-      console.error(
-        horse.name,
-        error
-      );
+  for(const horse of horses){
 
-      horse.pastRaces = [];
-      horse.style = "解析失敗";
-      horse.confidence = 0;
+    const patterns=[
+      new RegExp(
+        horse.number+
+        "[^\\n]{0,100}逃"
+      ),
+      new RegExp(
+        horse.name+
+        "[^\\n]{0,150}逃"
+      )
+    ];
+
+    let found="";
+
+    for(const p of patterns){
+
+      const m=text.match(p);
+
+      if(m){
+
+        found=m[0];
+        break;
+      }
     }
 
-    setStatus(
-      "過去走解析中...\n" +
-      (i+1) +
-      " / " +
-      horses.length +
-      "\n" +
-      horse.name
-    );
+    if(!found) continue;
 
-    renderHorses();
+    if(
+      found.includes("逃")
+    ){
+      horse.netkeibaPosition.start="逃";
+    }
 
-    /*
-      連続アクセスを少し緩和
-    */
-    await sleep(250);
+    else if(
+      found.includes("先")
+    ){
+      horse.netkeibaPosition.start="先行";
+    }
+
+    else if(
+      found.includes("差")
+    ){
+      horse.netkeibaPosition.start="差";
+    }
+
+    else if(
+      found.includes("追")
+    ){
+      horse.netkeibaPosition.start="追込";
+    }
+
   }
 
-  renderHorses();
-  renderFormation();
-  renderEV();
-
-  analyzeBtn.disabled = false;
-
-  setStatus(
-    "過去走解析完了\n" +
-    success +
-    " / " +
-    horses.length +
-    "頭解析"
-  );
 }
 
-/* =========================================================
-   待機
-========================================================= */
 
-function sleep(ms){
-  return new Promise(
-    resolve => setTimeout(resolve,ms)
-  );
-}
+/* =========================
+   今回の隊列予想
+========================= */
 
-/* =========================================================
-   レース情報
-========================================================= */
+function analyseFormation(){
 
-function renderRaceInfo(){
+  /*
+   * まず全馬を脚質から分類
+   */
 
-  if(!currentRace){
-    return;
+  horses.forEach(horse=>{
+
+    const score=horse.escapeScore;
+
+    if(score>=28){
+
+      horse.predictedGroup="逃げ";
+
+    }else if(
+      horse.style==="逃げ" ||
+      horse.style==="先行"
+    ){
+
+      horse.predictedGroup="先行";
+
+    }else if(
+      horse.style==="差し"
+    ){
+
+      horse.predictedGroup="中団";
+
+    }else{
+
+      horse.predictedGroup="後方";
+
+    }
+
+  });
+
+
+  /*
+   * 逃げ馬候補をスコア順に並べる
+   */
+
+  const sorted=
+    [...horses]
+      .sort(
+        (a,b)=>
+          b.escapeScore-a.escapeScore
+      );
+
+  if(!sorted.length) return;
+
+  /*
+   * 逃げ本命
+   */
+
+  const main=sorted[0];
+
+  /*
+   * 逃げスコア差が小さい馬は
+   * ハナ争い候補
+   */
+
+  const second=sorted[1];
+
+  if(second){
+
+    const diff=
+      main.escapeScore-
+      second.escapeScore;
+
+    if(diff<8){
+
+      second.predictedGroup="逃げ候補";
+
+    }
+
   }
 
-  document.getElementById("raceInfo").innerHTML = `
-    <div>
-      <span class="badge">Race ID ${escapeHtml(currentRace.id)}</span>
-      <span class="badge">${horses.length}頭</span>
-    </div>
-  `;
+  /*
+   * 最上位だけ「逃げ」とする。
+   */
+
+  main.predictedGroup="逃げ";
+
+
+  /*
+   * 逃げ本命以外の逃げ型は
+   * 先行に落とす
+   */
+
+  horses.forEach(horse=>{
+
+    if(
+      horse!==main &&
+      horse.predictedGroup==="逃げ"
+    ){
+
+      horse.predictedGroup="先行";
+
+    }
+
+  });
+
 }
 
-/* =========================================================
-   馬表示
-========================================================= */
+
+/* =========================
+   表示
+========================= */
+
+function styleClass(style){
+
+  if(style==="逃げ") return "escape";
+  if(style==="先行") return "front";
+  if(style==="差し") return "stalker";
+  if(style==="追込") return "closer";
+
+  return "";
+}
+
 
 function renderHorses(){
 
-  const box =
-    document.getElementById("horseList");
+  const el=
+    document.getElementById("horses");
 
   if(!horses.length){
 
-    box.innerHTML =
-      "<p>出走馬未取得</p>";
+    el.innerHTML="馬がありません";
 
     return;
   }
 
-  box.innerHTML =
-    horses.map(horse => {
+  el.innerHTML=
+    horses.map(horse=>{
 
-      const style =
-        horse.style || "未解析";
-
-      const pastCount =
-        horse.pastRaces
-          ? horse.pastRaces.length
-          : 0;
-
-      const pastHtml =
-        horse.pastRaces &&
-        horse.pastRaces.length
-          ? horse.pastRaces.map(
-              (race,index)=>{
-
-                const course =
-                  race.course || "--";
-
-                const surface =
-                  race.surface || "--";
-
-                const distance =
-                  race.distance
-                    ? race.distance + "m"
-                    : "--";
-
-                const going =
-                  race.going || "--";
-
-                return `
-                  <div class="past-row">
-                    <b>${index+1}走前</b>
-                   　
-                    ${escapeHtml(race.date)}
-                   　
-                    <b>${race.finish}着</b>
-                   　
-                    通過 ${escapeHtml(race.position)}
-                    <br>
-                    <span class="small">
-                      ${escapeHtml(course)}
-                      ・
-                      ${escapeHtml(surface)}
-                      ${escapeHtml(distance)}
-                      ・
-                      ${escapeHtml(going)}
-                      ${race.raceName
-                        ? " ・ " +
-                          escapeHtml(race.raceName)
-                        : ""}
-                    </span>
-                  </div>
-                `;
-              }
-            ).join("")
-          : "<div class='small'>過去走データなし</div>";
+      const recent=
+        horse.past
+          .slice(0,5)
+          .map(r=>
+            `${r.finish||"--"}着 ${
+              r.position||"--"
+            }`
+          )
+          .join(" / ");
 
       return `
         <div class="horse">
 
-          <div class="horse-head">
+          <div class="horse-name">
 
-            <div>
-              <span class="frame">
-                ${horse.frame}
-              </span>
+            ${horse.number}番
+            ${horse.name}
 
-              <span class="horse-name">
-                ${horse.number}.
-                ${escapeHtml(horse.name)}
-              </span>
-            </div>
+            <span class="badge ${styleClass(horse.style)}">
+              ${horse.style}
+            </span>
 
-            <div>
-              <span class="badge">
-                ${escapeHtml(style)}
-              </span>
-            </div>
+            <span class="badge">
+              ${horse.predictedGroup}
+            </span>
 
           </div>
 
-          <div class="meta">
-            オッズ：
-            ${horse.odds || "--"}
-            　
-            人気：
-            ${horse.popularity || "--"}
+          <div class="small">
+            脚質信頼度：${horse.confidence}%
+            ／逃げスコア：
+            ${horse.escapeScore.toFixed(1)}
           </div>
 
-          <div class="meta">
-            過去走：
-            ${pastCount}走
-            　
-            脚質信頼度：
-            ${horse.confidence || 0}%
+          <div class="small">
+            ${recent || "過去走データなし"}
           </div>
-
-          <details>
-            <summary>過去走を見る</summary>
-
-            <div class="past">
-              ${pastHtml}
-            </div>
-          </details>
 
         </div>
       `;
+
     }).join("");
 }
 
-/* =========================================================
-   隊列
-========================================================= */
+
+/* =========================
+   逃げ予想表示
+========================= */
+
+function renderForecast(){
+
+  const el=
+    document.getElementById("escapeForecast");
+
+  const sorted=
+    [...horses]
+      .sort(
+        (a,b)=>
+          b.escapeScore-a.escapeScore
+      );
+
+  if(!sorted.length){
+
+    el.textContent=
+      "解析できる馬がありません";
+
+    return;
+  }
+
+  const main=sorted[0];
+
+  const second=sorted[1];
+
+  let html="";
+
+  html+=`
+    <div>
+      <span class="small">
+        今回のハナ予想
+      </span>
+    </div>
+
+    <div class="big">
+      ◎ ${main.number}番 ${main.name}
+    </div>
+
+    <div>
+      逃げスコア：
+      ${main.escapeScore.toFixed(1)}
+    </div>
+
+    <div>
+      過去脚質：
+      ${main.style}
+      ／信頼度 ${main.confidence}%
+    </div>
+  `;
+
+  if(second){
+
+    html+=`
+      <hr style="border-color:#30363d">
+
+      <div class="small">
+        ハナ争い候補
+      </div>
+
+      <div>
+        ○ ${second.number}番 ${second.name}
+        ／
+        ${second.escapeScore.toFixed(1)}
+      </div>
+    `;
+  }
+
+  el.innerHTML=html;
+}
+
+
+/* =========================
+   隊列表示
+========================= */
 
 function renderFormation(){
 
-  const box =
-    document.getElementById("formationBox");
+  const groups={
+    "逃げ":[],
+    "逃げ候補":[],
+    "先行":[],
+    "中団":[],
+    "後方":[]
+  };
 
-  if(!horses.length){
-    box.innerHTML =
-      "出走馬未取得";
-    return;
-  }
+  horses.forEach(h=>{
 
-  const escape =
-    horses.filter(
-      h => h.style === "逃げ"
-    );
-
-  const front =
-    horses.filter(
-      h => h.style === "先行"
-    );
-
-  const stalker =
-    horses.filter(
-      h => h.style === "差し"
-    );
-
-  const closer =
-    horses.filter(
-      h => h.style === "追込"
-    );
-
-  function names(list){
-
-    if(!list.length){
-      return "なし";
+    if(!groups[h.predictedGroup]){
+      groups[h.predictedGroup]=[];
     }
 
-    return list.map(
-      h =>
-        h.number +
-        "." +
-        escapeHtml(h.name)
-    ).join("　");
-  }
+    groups[h.predictedGroup].push(h);
 
-  box.innerHTML = `
-    <div class="card">
-      <b>逃げ</b>
-      <p>${names(escape)}</p>
-    </div>
-
-    <div class="card">
-      <b>先行</b>
-      <p>${names(front)}</p>
-    </div>
-
-    <div class="card">
-      <b>差し</b>
-      <p>${names(stalker)}</p>
-    </div>
-
-    <div class="card">
-      <b>追込</b>
-      <p>${names(closer)}</p>
-    </div>
-  `;
-}
-
-/* =========================================================
-   期待値
-========================================================= */
-
-function renderEV(){
-
-  const box =
-    document.getElementById("evBox");
-
-  if(!horses.length){
-    box.innerHTML =
-      "<p>出走馬未取得</p>";
-    return;
-  }
-
-  box.innerHTML = `
-    <table>
-      <thead>
-        <tr>
-          <th>馬</th>
-          <th>脚質</th>
-          <th>人気</th>
-          <th>オッズ</th>
-          <th>入力勝率</th>
-          <th>期待値</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        ${horses.map((horse,index)=>{
-
-          const probability =
-            horse.userProbability || 0;
-
-          const ev =
-            horse.odds && probability
-              ? (
-                  horse.odds *
-                  (probability / 100)
-                ).toFixed(2)
-              : "--";
-
-          return `
-            <tr>
-              <td>
-                ${horse.number}.
-                ${escapeHtml(horse.name)}
-              </td>
-
-              <td>
-                ${escapeHtml(
-                  horse.style || "--"
-                )}
-              </td>
-
-              <td>
-                ${horse.popularity || "--"}
-              </td>
-
-              <td>
-                ${horse.odds || "--"}
-              </td>
-
-              <td>
-                <input
-                  type="number"
-                  min="0"
-                  max="100"
-                  step="0.1"
-                  value="${probability || ""}"
-                  placeholder="%"
-                  onchange="updateProbability(${index},this.value)"
-                >
-              </td>
-
-              <td>
-                <b>
-                  ${ev}
-                </b>
-              </td>
-            </tr>
-          `;
-        }).join("")}
-      </tbody>
-    </table>
-  `;
-}
-
-function updateProbability(index,value){
-
-  const n =
-    Number(value);
-
-  horses[index].userProbability =
-    Number.isFinite(n) ? n : 0;
-
-  renderEV();
-}
-
-/* =========================================================
-   タブ
-========================================================= */
-
-document.querySelectorAll(".tab")
-.forEach(button => {
-
-  button.addEventListener(
-    "click",
-    ()=>{
-
-      document.querySelectorAll(".tab")
-        .forEach(b =>
-          b.classList.remove("active")
-        );
-
-      document.querySelectorAll(".section")
-        .forEach(section =>
-          section.classList.remove("active")
-        );
-
-      button.classList.add("active");
-
-      const id =
-        button.dataset.tab;
-
-      document
-        .getElementById(id)
-        .classList.add("active");
-
-    }
-  );
-
-});
-
-/* =========================================================
-   検証
-========================================================= */
-
-function loadVerify(){
-
-  const box =
-    document.getElementById("verifyList");
-
-  const data =
-    JSON.parse(
-      localStorage.getItem(
-        "keiba_verify_v0951"
-      ) || "[]"
-    );
-
-  if(!data.length){
-
-    box.innerHTML =
-      "<p class='small'>保存された検証結果はありません。</p>";
-
-    return;
-  }
-
-  box.innerHTML =
-    data.map(item => `
-      <div class="past-row">
-        <b>${escapeHtml(item.race)}</b>
-        → ${escapeHtml(item.winner)}
-        <span class="small">
-          ${escapeHtml(item.time)}
-        </span>
-      </div>
-    `).join("");
-}
-
-function saveVerify(){
-
-  const race =
-    document.getElementById(
-      "verifyRace"
-    ).value.trim();
-
-  const winner =
-    document.getElementById(
-      "verifyWinner"
-    ).value.trim();
-
-  if(!race || !winner){
-
-    alert(
-      "レース名と勝ち馬を入力してください。"
-    );
-
-    return;
-  }
-
-  const key =
-    "keiba_verify_v0951";
-
-  const data =
-    JSON.parse(
-      localStorage.getItem(key) || "[]"
-    );
-
-  data.unshift({
-    race,
-    winner,
-    time:new Date().toLocaleString(
-      "ja-JP"
-    )
   });
 
-  localStorage.setItem(
-    key,
-    JSON.stringify(
-      data.slice(0,100)
-    )
+  let html="";
+
+  [
+    "逃げ",
+    "逃げ候補",
+    "先行",
+    "中団",
+    "後方"
+  ].forEach(group=>{
+
+    if(!groups[group].length) return;
+
+    html+=`
+      <div style="margin-bottom:8px">
+        <strong>${group}</strong>：
+        ${groups[group]
+          .map(h=>
+            `${h.number} ${h.name}`
+          )
+          .join(" ／ ")}
+      </div>
+    `;
+
+  });
+
+  document.getElementById(
+    "formation"
+  ).innerHTML=html;
+}
+
+
+/* =========================
+   コース設定
+========================= */
+
+function getCourseConfig(){
+
+  const venue=raceInfo.course;
+  const surface=raceInfo.surface;
+  const distance=raceInfo.distance;
+
+  /*
+   * 新潟芝1000は直線
+   */
+
+  if(
+    venue==="新潟" &&
+    surface==="芝" &&
+    distance===1000
+  ){
+
+    return {
+      type:"straight",
+      label:"新潟 芝1000m 直線"
+    };
+  }
+
+  /*
+   * 基本は楕円。
+   * 競馬場ごとの特徴を軽く反映。
+   */
+
+  let direction="右回り";
+
+  if(
+    venue==="東京" ||
+    venue==="新潟" ||
+    venue==="中京"
+  ){
+
+    direction="左回り";
+  }
+
+  return {
+    type:"oval",
+    label:
+      (venue||"競馬場不明")+
+      " "+
+      (surface||"")+
+      " "+
+      (distance||"")+"m "+
+      direction
+  };
+}
+
+
+/* =========================
+   SVG生成
+========================= */
+
+function renderCourse(){
+
+  const config=
+    getCourseConfig();
+
+  document.getElementById(
+    "courseInfo"
+  ).textContent=
+    config.label+
+    "｜模式図";
+
+  if(config.type==="straight"){
+
+    renderStraightCourse();
+
+  }else{
+
+    renderOvalCourse();
+
+  }
+
+}
+
+
+function renderStraightCourse(){
+
+  const width=800;
+  const height=280;
+
+  const startX=80;
+  const goalX=720;
+  const y=140;
+
+  let html=`
+    <svg
+      id="courseSvg"
+      viewBox="0 0 ${width} ${height}"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+
+      <line
+        x1="${startX}"
+        y1="${y}"
+        x2="${goalX}"
+        y2="${y}"
+        class="track"
+      />
+
+      <line
+        x1="${startX}"
+        y1="${y}"
+        x2="${goalX}"
+        y2="${y}"
+        class="track-inner"
+      />
+
+      <text
+        x="${startX}"
+        y="70"
+        class="marker-text"
+      >
+        START
+      </text>
+
+      <text
+        x="${goalX-30}"
+        y="70"
+        class="marker-text"
+      >
+        GOAL
+      </text>
+
+      <g id="horseLayer"></g>
+
+    </svg>
+  `;
+
+  document.getElementById(
+    "course"
+  ).innerHTML=html;
+
+  svgState={
+    type:"straight",
+    width,
+    height,
+    startX,
+    goalX,
+    y
+  };
+
+  createHorseTokens();
+
+}
+
+
+/* =========================
+   楕円コース
+========================= */
+
+function renderOvalCourse(){
+
+  const width=800;
+  const height=520;
+
+  const cx=400;
+  const cy=260;
+
+  const rx=270;
+  const ry=170;
+
+  const path=`
+    M ${cx-rx} ${cy}
+    C ${cx-rx} ${cy-ry},
+      ${cx-rx/2} ${cy-ry},
+      ${cx} ${cy-ry}
+
+    C ${cx+rx/2} ${cy-ry},
+      ${cx+rx} ${cy-ry},
+      ${cx+rx} ${cy}
+
+    C ${cx+rx} ${cy+ry},
+      ${cx+rx/2} ${cy+ry},
+      ${cx} ${cy+ry}
+
+    C ${cx-rx/2} ${cy+ry},
+      ${cx-rx} ${cy+ry},
+      ${cx-rx} ${cy}
+  `;
+
+  let html=`
+    <svg
+      id="courseSvg"
+      viewBox="0 0 ${width} ${height}"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+
+      <path
+        id="trackPath"
+        d="${path}"
+        class="track"
+      />
+
+      <path
+        d="${path}"
+        class="track-inner"
+      />
+
+      <circle
+        cx="${cx-rx}"
+        cy="${cy}"
+        r="8"
+        class="marker"
+      />
+
+      <text
+        x="${cx-rx-25}"
+        y="${cy-25}"
+        class="marker-text"
+      >
+        START
+      </text>
+
+      <circle
+        cx="${cx}"
+        cy="${cy-ry}"
+        r="7"
+        class="marker"
+      />
+
+      <text
+        x="${cx+10}"
+        y="${cy-ry-10}"
+        class="marker-text"
+      >
+        3C
+      </text>
+
+      <circle
+        cx="${cx+rx}"
+        cy="${cy}"
+        r="7"
+        class="marker"
+      />
+
+      <text
+        x="${cx+10}"
+        y="${cy+30}"
+        class="marker-text"
+      >
+        4C
+      </text>
+
+      <circle
+        cx="${cx-rx}"
+        cy="${cy}"
+        r="7"
+        class="marker"
+      />
+
+      <text
+        x="${cx-rx-25}"
+        y="${cy+35}"
+        class="marker-text"
+      >
+        GOAL
+      </text>
+
+      <g id="horseLayer"></g>
+
+    </svg>
+  `;
+
+  document.getElementById(
+    "course"
+  ).innerHTML=html;
+
+  const pathElement=
+    document.getElementById("trackPath");
+
+  svgState={
+    type:"oval",
+    pathElement,
+    length:pathElement.getTotalLength()
+  };
+
+  createHorseTokens();
+
+}
+
+
+/* =========================
+   馬アイコン
+========================= */
+
+function createHorseTokens(){
+
+  const layer=
+    document.getElementById(
+      "horseLayer"
+    );
+
+  if(!layer) return;
+
+  layer.innerHTML="";
+
+  horses.forEach((horse,index)=>{
+
+    const g=
+      document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "g"
+      );
+
+    g.setAttribute(
+      "class",
+      "horse-token"
+    );
+
+    g.dataset.index=index;
+
+    const circle=
+      document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "circle"
+      );
+
+    circle.setAttribute(
+      "r",
+      "14"
+    );
+
+    circle.setAttribute(
+      "class",
+      "horse-circle"
+    );
+
+    const text=
+      document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "text"
+      );
+
+    text.textContent=
+      horse.number;
+
+    text.setAttribute(
+      "class",
+      "horse-number"
+    );
+
+    g.appendChild(circle);
+    g.appendChild(text);
+
+    g.addEventListener(
+      "click",
+      ()=>{
+        alert(
+          horse.number+
+          "番 "+horse.name+
+          "\n脚質："+horse.style+
+          "\n今回："+horse.predictedGroup
+        );
+      }
+    );
+
+    layer.appendChild(g);
+
+  });
+
+  resetAnimation();
+
+}
+
+
+/* =========================
+   隊列位置
+========================= */
+
+function groupRank(horse){
+
+  switch(horse.predictedGroup){
+
+    case "逃げ":
+      return 0;
+
+    case "逃げ候補":
+      return 1;
+
+    case "先行":
+      return 2;
+
+    case "中団":
+      return 3;
+
+    case "後方":
+      return 4;
+
+    default:
+      return 3;
+  }
+}
+
+
+function getGroupOffset(horse){
+
+  const same=
+    horses.filter(
+      h=>
+        h.predictedGroup===
+        horse.predictedGroup
+    );
+
+  const index=
+    same.indexOf(horse);
+
+  return index-
+    (same.length-1)/2;
+}
+
+
+/* =========================
+   アニメーション位置
+========================= */
+
+function setHorsePosition(
+  horse,
+  progress
+){
+
+  const index=
+    horses.indexOf(horse);
+
+  const layer=
+    document.getElementById(
+      "horseLayer"
+    );
+
+  if(!layer) return;
+
+  const token=
+    layer.children[index];
+
+  if(!token) return;
+
+  if(svgState.type==="straight"){
+
+    const rank=
+      groupRank(horse);
+
+    const offset=
+      getGroupOffset(horse);
+
+    const start=
+      svgState.startX+
+      rank*8;
+
+    const x=
+      start+
+      (
+        svgState.goalX-start
+      )*
+      progress;
+
+    const y=
+      svgState.y+
+      offset*22;
+
+    token.setAttribute(
+      "transform",
+      `translate(${x},${y})`
+    );
+
+    return;
+  }
+
+
+  /*
+   * 楕円コース
+   */
+
+  const path=
+    svgState.pathElement;
+
+  const length=
+    svgState.length;
+
+  /*
+   * START→3C→4C→GOALを
+   * コース上で移動
+   */
+
+  const base=
+    0.0;
+
+  let fraction;
+
+  if(progress<0.65){
+
+    /*
+     * スタートから3C
+     */
+
+    fraction=
+      base+
+      progress*
+      0.70;
+
+  }else if(progress<0.82){
+
+    /*
+     * 3C→4C
+     */
+
+    fraction=
+      0.455+
+      (progress-0.65)*
+      1.9;
+
+  }else{
+
+    /*
+     * 4C→GOAL
+     */
+
+    fraction=
+      0.778+
+      (progress-0.82)*
+      1.23;
+
+  }
+
+  fraction=
+    fraction%1;
+
+  const point=
+    path.getPointAtLength(
+      length*fraction
+    );
+
+  /*
+   * 隊列による前後差
+   */
+
+  const rank=
+    groupRank(horse);
+
+  const offset=
+    getGroupOffset(horse);
+
+  const spread=
+    8+
+    rank*2;
+
+  const x=
+    point.x+
+    offset*spread;
+
+  const y=
+    point.y+
+    offset*spread*0.6;
+
+  token.setAttribute(
+    "transform",
+    `translate(${x},${y})`
+  );
+}
+
+
+/* =========================
+   全馬更新
+========================= */
+
+function updateAnimation(progress){
+
+  horses.forEach(
+    horse=>
+      setHorsePosition(
+        horse,
+        progress
+      )
   );
 
-  document.getElementById(
-    "verifyRace"
-  ).value = "";
-
-  document.getElementById(
-    "verifyWinner"
-  ).value = "";
-
-  loadVerify();
-
-  alert("保存しました。");
 }
 
-/* =========================================================
-   ステータス
-========================================================= */
 
-function setStatus(text){
-  statusEl.textContent = text;
+/* =========================
+   再生
+========================= */
+
+function playAnimation(){
+
+  if(animationRunning) return;
+
+  animationRunning=true;
+
+  const duration=12000;
+
+  const startProgress=
+    animationPausedAt;
+
+  animationStart=
+    performance.now()-
+    startProgress*
+    duration/
+    animationSpeed;
+
+  function frame(now){
+
+    if(!animationRunning) return;
+
+    let progress=
+      (
+        now-
+        animationStart
+      )/
+      duration*
+      animationSpeed;
+
+    if(progress>=1){
+
+      progress=1;
+
+      updateAnimation(progress);
+
+      animationRunning=false;
+
+      animationPausedAt=1;
+
+      return;
+    }
+
+    updateAnimation(progress);
+
+    animationFrame=
+      requestAnimationFrame(frame);
+  }
+
+  animationFrame=
+    requestAnimationFrame(frame);
 }
 
-/* =========================================================
-   ボタンイベント
-========================================================= */
 
-loadMeetingBtn.addEventListener(
-  "click",
-  loadMeeting
-);
+function pauseAnimation(){
 
-loadRaceBtn.addEventListener(
-  "click",
-  loadRace
-);
+  if(!animationRunning) return;
 
-analyzeBtn.addEventListener(
-  "click",
-  analyzeAllHorses
-);
+  animationRunning=false;
 
-document.getElementById(
-  "saveVerifyBtn"
-).addEventListener(
-  "click",
-  saveVerify
-);
+  cancelAnimationFrame(
+    animationFrame
+  );
+}
 
-/* =========================================================
-   初期化
-========================================================= */
 
-(function init(){
+function resetAnimation(){
 
-  const today =
+  animationRunning=false;
+
+  animationPausedAt=0;
+
+  cancelAnimationFrame(
+    animationFrame
+  );
+
+  if(svgState){
+
+    updateAnimation(0);
+
+  }
+
+}
+
+
+function setSpeed(speed){
+
+  animationSpeed=speed;
+
+}
+
+
+/* =========================
+   初期日付
+========================= */
+
+(function(){
+
+  const input=
+    document.getElementById(
+      "dateInput"
+    );
+
+  const now=
     new Date();
 
-  const yyyy =
-    today.getFullYear();
+  const y=
+    now.getFullYear();
 
-  const mm =
+  const m=
     String(
-      today.getMonth()+1
+      now.getMonth()+1
     ).padStart(2,"0");
 
-  const dd =
+  const d=
     String(
-      today.getDate()
+      now.getDate()
     ).padStart(2,"0");
 
-  document.getElementById(
-    "kaisaiDate"
-  ).value =
-    `${yyyy}-${mm}-${dd}`;
-
-  loadVerify();
+  input.value=
+    `${y}-${m}-${d}`;
 
 })();
 
