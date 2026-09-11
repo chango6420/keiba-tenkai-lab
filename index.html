@@ -6,25 +6,28 @@
 <title>競馬展開ラボ v0.5.4</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 body{
   margin:0;
   background:#f4f6f8;
   color:#17202a;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",
-  "Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif
+  font-family:-apple-system,BlinkMacSystemFont,
+  "Segoe UI","Hiragino Kaku Gothic ProN",
+  "Yu Gothic",Meiryo,sans-serif;
 }
 
 header{
   background:#111827;
   color:#fff;
-  padding:16px
+  padding:16px;
 }
 
 .title{
   font-size:22px;
-  font-weight:800
+  font-weight:800;
 }
 
 .badge{
@@ -33,13 +36,13 @@ header{
   padding:4px 8px;
   border-radius:20px;
   background:#374151;
-  font-size:11px
+  font-size:11px;
 }
 
 .container{
-  max-width:1100px;
+  max-width:1000px;
   margin:auto;
-  padding:14px
+  padding:14px;
 }
 
 .card{
@@ -47,48 +50,45 @@ header{
   border-radius:14px;
   padding:15px;
   margin-bottom:14px;
-  box-shadow:0 2px 8px rgba(0,0,0,.07)
+  box-shadow:0 2px 8px rgba(0,0,0,.07);
 }
 
 h2{
   margin:0 0 12px;
-  font-size:18px
+  font-size:18px;
 }
 
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:10px
+  gap:10px;
 }
 
 label{
   display:block;
   font-size:12px;
   font-weight:bold;
-  margin-bottom:5px
+  margin-bottom:5px;
 }
 
-input,button{
+input,
+button{
   width:100%;
   min-height:44px;
   border-radius:9px;
-  font-size:16px
+  font-size:16px;
 }
 
 input{
   border:1px solid #d1d5db;
-  padding:8px
+  padding:8px;
 }
 
 button{
   border:0;
   background:#2563eb;
   color:#fff;
-  font-weight:bold
-}
-
-button:disabled{
-  opacity:.5
+  font-weight:bold;
 }
 
 .status{
@@ -97,83 +97,76 @@ button:disabled{
   border-radius:10px;
   background:#eef2ff;
   white-space:pre-wrap;
-  font-size:13px
+  font-size:13px;
 }
 
 .ok{
   background:#ecfdf5;
-  color:#065f46
+  color:#065f46;
 }
 
 .error{
   background:#fef2f2;
-  color:#991b1b
+  color:#991b1b;
 }
 
 .loading{
   display:none;
   margin-top:10px;
   text-align:center;
-  font-weight:bold
+  font-weight:bold;
 }
 
 .races{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:8px;
-  margin-top:12px
+  margin-top:12px;
 }
 
 .race{
   background:#f3f4f6;
   color:#111827;
   border:1px solid #d1d5db;
-  min-height:55px
+  min-height:55px;
 }
 
 .race.selected{
   background:#2563eb;
-  color:#fff
-}
-
-.race-loading{
-  background:#d97706!important;
-  color:#fff!important
+  color:#fff;
 }
 
 .meta{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:8px;
-  margin-bottom:14px
 }
 
 .meta-box{
   background:#f8fafc;
   border-radius:9px;
-  padding:9px
+  padding:9px;
 }
 
 .meta-label{
   font-size:10px;
-  color:#64748b
+  color:#64748b;
 }
 
 .meta-value{
   font-size:14px;
   font-weight:800;
-  margin-top:2px
+  margin-top:2px;
 }
 
 .table-wrap{
   overflow-x:auto;
-  -webkit-overflow-scrolling:touch
 }
 
 table{
   width:100%;
   border-collapse:collapse;
-  min-width:850px
+  min-width:850px;
 }
 
 th{
@@ -181,48 +174,38 @@ th{
   color:#fff;
   padding:8px;
   font-size:11px;
-  white-space:nowrap
+  white-space:nowrap;
 }
 
 td{
   border-bottom:1px solid #e5e7eb;
   padding:8px;
   font-size:12px;
-  white-space:nowrap
+  white-space:nowrap;
 }
 
 .horse-name{
-  font-weight:800
+  font-weight:800;
 }
 
 .odds{
-  font-weight:800
-}
-
-.small{
-  margin-top:10px;
-  font-size:11px;
-  color:#64748b;
-  line-height:1.6
-}
-
-pre{
-  white-space:pre-wrap;
-  word-break:break-word;
-  background:#111827;
-  color:#d1d5db;
-  padding:12px;
-  border-radius:10px;
-  max-height:400px;
-  overflow:auto;
-  font-size:10px
+  font-weight:800;
 }
 
 @media(max-width:600px){
-  .grid{grid-template-columns:1fr}
-  .races{grid-template-columns:repeat(3,1fr)}
-  .meta{grid-template-columns:repeat(2,1fr)}
-  .container{padding:10px}
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .races{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  .meta{
+    grid-template-columns:repeat(2,1fr);
+  }
+
 }
 </style>
 </head>
@@ -231,7 +214,7 @@ pre{
 
 <header>
   <div class="title">競馬展開ラボ</div>
-  <div class="badge">v0.5.4 NETKEIBA AUTO FETCH</div>
+  <div class="badge">v0.5.4 TEST</div>
 </header>
 
 <div class="container">
@@ -268,8 +251,8 @@ pre{
   </div>
 
 
-  <!-- レース一覧 -->
-  <div id="raceCard" class="card" style="display:none">
+  <!-- レース -->
+  <div id="raceCard" class="card" style="display:none;">
 
     <h2>② レースを選択</h2>
 
@@ -283,9 +266,9 @@ pre{
 
 
   <!-- 出馬表 -->
-  <div id="resultCard" class="card" style="display:none">
+  <div id="resultCard" class="card" style="display:none;">
 
-    <h2>③ 出馬表取得結果</h2>
+    <h2>③ 出馬表</h2>
 
     <div id="raceMeta" class="meta"></div>
 
@@ -320,148 +303,103 @@ pre{
 
   </div>
 
-
-  <!-- デバッグ -->
-  <div id="debugCard" class="card" style="display:none">
-
-    <h2>取得デバッグ</h2>
-
-    <pre id="debug"></pre>
-
-  </div>
-
 </div>
 
 
 <script>
 
-"use strict";
-
-
 /* =====================================================
-   設定
+   v0.5.4
+   v0.5.3をベースに最小変更
 ===================================================== */
 
-const JINA_BASE = "https://r.jina.ai/";
+var JINA_BASE = "https://r.jina.ai/";
 
-let selectedRaceId = null;
-let currentRaceData = null;
+var selectedRaceId = "";
 
 
 /* =====================================================
-   初期化
+   ページ準備
 ===================================================== */
 
 document.addEventListener(
   "DOMContentLoaded",
   function(){
 
-    console.log(
-      "競馬展開ラボ v0.5.4 起動"
-    );
-
-
-    const dateInput =
+    var date =
       document.getElementById("raceDate");
 
-
-    const button =
+    var button =
       document.getElementById("fetchButton");
 
 
-    const now =
-      new Date();
+    /*
+      今日の日付をセット
+    */
 
+    var now = new Date();
 
-    const y =
+    var year =
       now.getFullYear();
 
+    var month =
+      String(now.getMonth() + 1)
+      .padStart(2,"0");
 
-    const m =
-      String(
-        now.getMonth()+1
-      ).padStart(2,"0");
+    var day =
+      String(now.getDate())
+      .padStart(2,"0");
 
-
-    const d =
-      String(
-        now.getDate()
-      ).padStart(2,"0");
-
-
-    dateInput.value =
-      y + "-" + m + "-" + d;
+    date.value =
+      year + "-" +
+      month + "-" +
+      day;
 
 
-    button.addEventListener(
-      "click",
-      fetchRaces
-    );
+    /*
+      開催情報ボタン
+    */
+
+    button.onclick =
+      function(){
+
+        fetchRaceDay();
+
+      };
 
   }
 );
 
 
 /* =====================================================
-   Jina URL
+   Jina取得
 ===================================================== */
 
-function jina(url){
+function fetchJina(url){
 
-  return JINA_BASE + url;
+  return fetch(
+    JINA_BASE + url,
+    {
+      method:"GET",
+      cache:"no-store"
+    }
+  )
+  .then(
+    function(response){
 
-}
+      if(!response.ok){
 
+        throw new Error(
+          "Jina HTTP " +
+          response.status
+        );
 
-/* =====================================================
-   ページ取得
-===================================================== */
-
-async function getPage(url){
-
-  console.log(
-    "取得開始:",
-    url
-  );
-
-
-  const response =
-    await fetch(
-      jina(url),
-      {
-        method:"GET",
-        cache:"no-store"
       }
-    );
 
+      return response.text();
 
-  console.log(
-    "HTTP:",
-    response.status
+    }
   );
-
-
-  if(!response.ok){
-
-    throw new Error(
-      "Jina HTTP " +
-      response.status
-    );
-
-  }
-
-
-  const text =
-    await response.text();
-
-
-  console.log(
-    "取得文字数:",
-    text.length
-  );
-
-
-  return text;
 
 }
 
@@ -470,11 +408,10 @@ async function getPage(url){
    開催情報URL
 ===================================================== */
 
-function getRaceListURL(date){
+function getDayURL(date){
 
-  const d =
-    date.replaceAll("-","");
-
+  var d =
+    date.replace(/-/g,"");
 
   return (
     "https://race.netkeiba.com/" +
@@ -503,17 +440,17 @@ function getRaceURL(raceId){
 
 
 /* =====================================================
-   race_id抽出
+   race_id取得
 ===================================================== */
 
-function getRaceIds(text){
+function extractRaceIds(text){
 
-  const result = [];
+  var ids = [];
 
-  const regex =
+  var regex =
     /race_id=(\d{12})/g;
 
-  let match;
+  var match;
 
 
   while(
@@ -521,19 +458,17 @@ function getRaceIds(text){
   ){
 
     if(
-      !result.includes(match[1])
+      ids.indexOf(match[1]) === -1
     ){
 
-      result.push(
-        match[1]
-      );
+      ids.push(match[1]);
 
     }
 
   }
 
 
-  return result;
+  return ids;
 
 }
 
@@ -542,33 +477,29 @@ function getRaceIds(text){
    開催情報取得
 ===================================================== */
 
-async function fetchRaces(){
+function fetchRaceDay(){
 
-  const date =
+  var date =
     document.getElementById(
       "raceDate"
     ).value;
 
-
-  const status =
+  var status =
     document.getElementById(
       "status"
     );
 
-
-  const loading =
+  var loading =
     document.getElementById(
       "loading"
     );
 
-
-  const raceCard =
+  var raceCard =
     document.getElementById(
       "raceCard"
     );
 
-
-  const races =
+  var races =
     document.getElementById(
       "races"
     );
@@ -602,161 +533,155 @@ async function fetchRaces(){
     "none";
 
 
-  document.getElementById(
-    "resultCard"
-  ).style.display =
-    "none";
+  races.innerHTML =
+    "";
 
 
-  races.innerHTML = "";
+  /*
+    v0.5.3と同じ取得処理
+  */
+
+  var url =
+    getDayURL(date);
 
 
-  try{
+  fetchJina(url)
 
-    const url =
-      getRaceListURL(date);
+    .then(
+      function(text){
 
-
-    const text =
-      await getPage(url);
-
-
-    const ids =
-      getRaceIds(text);
+        var ids =
+          extractRaceIds(text);
 
 
-    if(!ids.length){
+        if(ids.length === 0){
 
-      throw new Error(
-        "race_idが見つかりませんでした。"
-      );
-
-    }
-
-
-    const unique =
-      [...new Set(ids)];
-
-
-    /*
-      開催日によっては複数場開催なので
-      最大36レース程度になる。
-      race_idの末尾2桁を使って
-      1R〜12Rとして表示する。
-    */
-
-
-    const raceMap = {};
-
-
-    unique.forEach(
-      function(id){
-
-        const raceNo =
-          parseInt(
-            id.slice(-2),
-            10
+          throw new Error(
+            "race_idが見つかりませんでした。"
           );
-
-
-        if(
-          raceNo >= 1 &&
-          raceNo <= 12 &&
-          !raceMap[raceNo]
-        ){
-
-          raceMap[raceNo] = id;
 
         }
 
-      }
-    );
+
+        /*
+          末尾2桁がR番号。
+
+          同一開催日の複数競馬場を含むため、
+          まず取得したrace_idをそのまま
+          3つの開催場×12R程度まで扱う。
+        */
+
+        var shown = 0;
 
 
-    const raceNumbers =
-      Object.keys(raceMap)
-        .map(Number)
-        .sort(
-          (a,b)=>a-b
-        );
+        ids.forEach(
+          function(id){
+
+            var raceNo =
+              parseInt(
+                id.substring(10,12),
+                10
+              );
 
 
-    raceNumbers.forEach(
-      function(raceNo){
+            if(
+              raceNo < 1 ||
+              raceNo > 12
+            ){
 
-        const id =
-          raceMap[raceNo];
+              return;
 
-
-        const button =
-          document.createElement(
-            "button"
-          );
+            }
 
 
-        button.className =
-          "race";
+            var button =
+              document.createElement(
+                "button"
+              );
 
 
-        button.textContent =
-          raceNo + "R";
+            button.className =
+              "race";
 
 
-        button.addEventListener(
-          "click",
-          function(){
+            button.textContent =
+              raceNo + "R";
 
-            selectRace(
-              id,
-              raceNo,
+
+            button.onclick =
+              function(){
+
+                selectRace(
+                  id,
+                  raceNo,
+                  button
+                );
+
+              };
+
+
+            races.appendChild(
               button
             );
+
+
+            shown++;
 
           }
         );
 
 
-        races.appendChild(
-          button
-        );
+        if(shown === 0){
+
+          throw new Error(
+            "1R〜12Rのレースを認識できませんでした。"
+          );
+
+        }
+
+
+        status.className =
+          "status ok";
+
+
+        status.textContent =
+          "開催情報の取得に成功しました。\n" +
+          "認識したレース：" +
+          shown +
+          "件";
+
+
+        raceCard.style.display =
+          "block";
+
+      }
+    )
+
+    .catch(
+      function(error){
+
+        console.error(error);
+
+
+        status.className =
+          "status error";
+
+
+        status.textContent =
+          "開催情報の取得に失敗しました。\n\n" +
+          error.message;
+
+      }
+    )
+
+    .finally(
+      function(){
+
+        loading.style.display =
+          "none";
 
       }
     );
-
-
-    status.className =
-      "status ok";
-
-
-    status.textContent =
-      "開催情報の取得に成功しました。\n" +
-      "認識したレース：" +
-      raceNumbers.length +
-      "R";
-
-
-    raceCard.style.display =
-      "block";
-
-
-  }catch(error){
-
-    console.error(error);
-
-
-    status.className =
-      "status error";
-
-
-    status.textContent =
-      "開催情報の取得に失敗しました。\n\n" +
-      error.message;
-
-  }
-
-
-  loading.style.display =
-    "none";
 
 }
 
@@ -765,7 +690,7 @@ async function fetchRaces(){
    レース選択
 ===================================================== */
 
-async function selectRace(
+function selectRace(
   raceId,
   raceNo,
   button
@@ -775,29 +700,33 @@ async function selectRace(
     raceId;
 
 
-  document
-    .querySelectorAll(".race")
-    .forEach(
-      function(b){
+  /*
+    選択状態
+  */
 
-        b.classList.remove(
-          "selected"
-        );
-
-        b.classList.remove(
-          "race-loading"
-        );
-
-      }
+  var buttons =
+    document.querySelectorAll(
+      ".race"
     );
 
 
-  button.classList.add(
-    "race-loading"
+  buttons.forEach(
+    function(b){
+
+      b.classList.remove(
+        "selected"
+      );
+
+    }
   );
 
 
-  const status =
+  button.classList.add(
+    "selected"
+  );
+
+
+  var status =
     document.getElementById(
       "raceStatus"
     );
@@ -812,132 +741,111 @@ async function selectRace(
     "Rの出馬表を取得しています……";
 
 
-  document.getElementById(
-    "resultCard"
-  ).style.display =
-    "none";
+  /*
+    出馬表取得
+  */
+
+  var url =
+    getRaceURL(raceId);
 
 
-  try{
+  fetchJina(url)
 
-    const url =
-      getRaceURL(raceId);
+    .then(
+      function(text){
+
+        var data =
+          parseRacePage(
+            text,
+            raceId,
+            raceNo
+          );
 
 
-    const text =
-      await getPage(url);
+        renderRace(
+          data
+        );
 
 
-    console.log(
-      "出馬表取得成功"
+        status.className =
+          "status ok";
+
+
+        status.textContent =
+          "出馬表の取得に成功しました。\n" +
+          "認識した馬：" +
+          data.horses.length +
+          "頭";
+
+
+        document.getElementById(
+          "resultCard"
+        ).style.display =
+          "block";
+
+      }
+    )
+
+    .catch(
+      function(error){
+
+        console.error(error);
+
+
+        status.className =
+          "status error";
+
+
+        status.textContent =
+          "出馬表の取得に失敗しました。\n\n" +
+          error.message;
+
+      }
     );
-
-
-    const data =
-      parseRacePage(
-        text,
-        raceId,
-        raceNo
-      );
-
-
-    currentRaceData =
-      data;
-
-
-    renderRaceData(
-      data
-    );
-
-
-    button.classList.remove(
-      "race-loading"
-    );
-
-
-    button.classList.add(
-      "selected"
-    );
-
-
-    status.className =
-      "status ok";
-
-
-    status.textContent =
-      "出馬表の取得に成功しました。\n" +
-      "認識した馬：" +
-      data.horses.length +
-      "頭";
-
-
-    document.getElementById(
-      "resultCard"
-    ).style.display =
-      "block";
-
-
-    document.getElementById(
-      "debugCard"
-    ).style.display =
-      "block";
-
-
-    document.getElementById(
-      "debug"
-    ).textContent =
-      "race_id:\n" +
-      raceId +
-      "\n\n" +
-      "取得馬数:\n" +
-      data.horses.length +
-      "\n\n" +
-      "取得URL:\n" +
-      url;
-
-
-  }catch(error){
-
-    console.error(error);
-
-
-    button.classList.remove(
-      "race-loading"
-    );
-
-
-    status.className =
-      "status error";
-
-
-    status.textContent =
-      "出馬表の取得に失敗しました。\n\n" +
-      error.message;
-
-  }
 
 }
 
 
 /* =====================================================
-   Markdown除去
+   馬名処理
 ===================================================== */
 
 function cleanText(value){
 
-  if(
-    value === undefined ||
-    value === null
-  ){
-
+  if(!value){
     return "";
-
   }
 
 
-  let s =
+  var s =
     String(value);
 
+
+  /*
+    Image markdown除去
+  */
+
+  s =
+    s.replace(
+      /!\[[^\]]*\]\([^)]*\)/g,
+      ""
+    );
+
+
+  /*
+    通常のMarkdownリンク
+  */
+
+  s =
+    s.replace(
+      /\[([^\]]+)\]\([^)]*\)/g,
+      "$1"
+    );
+
+
+  /*
+    HTML entity
+  */
 
   s =
     s.replace(
@@ -953,19 +861,41 @@ function cleanText(value){
     );
 
 
-  s =
-    s.replace(
-      /&quot;/g,
-      '"'
+  return s.trim();
+
+}
+
+
+function extractHorseName(cell){
+
+  var s =
+    cell || "";
+
+
+  /*
+    最優先：
+    horseページのtitleに入っている馬名
+  */
+
+  var match =
+    s.match(
+      /\/horse\/[^)]*\s+"([^"]+)"/
     );
 
 
-  s =
-    s.replace(
-      /&#39;/g,
-      "'"
-    );
+  if(
+    match &&
+    match[1]
+  ){
 
+    return match[1].trim();
+
+  }
+
+
+  /*
+    Imageを削除
+  */
 
   s =
     s.replace(
@@ -974,100 +904,13 @@ function cleanText(value){
     );
 
 
-  s =
-    s.replace(
-      /\[([^\]]+)\]\([^)]*\)/g,
-      "$1"
-    );
-
-
-  s =
-    s.replace(
-      /https?:\/\/\S+/g,
-      ""
-    );
-
-
-  s =
-    s.replace(
-      /\*\*/g,
-      ""
-    );
-
-
-  s =
-    s.replace(
-      /\*/g,
-      ""
-    );
-
-
-  s =
-    s.replace(
-      /`/g,
-      ""
-    );
-
-
-  return s.trim();
-
-}
-
-
-/* =====================================================
-   馬名抽出
-===================================================== */
-
-function extractHorseName(cell){
-
-  let s =
-    cell || "";
-
-
   /*
-    netkeibaのJina出力：
-
-    [馬名![Image](...)]
-    (https://db.netkeiba.com/horse/xxxxx "馬名")
-  */
-
-
-  let match =
-    s.match(
-      /\]$begin:math:text$\[\^\)\]\*\\\/horse\\\/\[\^\)\]\*\\s\+\"\(\[\^\"\]\+\)\"$end:math:text$/
-    );
-
-
-  if(
-    match &&
-    match[1]
-  ){
-
-    return cleanText(
-      match[1]
-    );
-
-  }
-
-
-  /*
-    画像部分を削除
-  */
-
-  s =
-    s.replace(
-      /!$begin:math:display$\[\^$end:math:display$]*\]$begin:math:text$\[\^\)\]\*$end:math:text$/g,
-      ""
-    );
-
-
-  /*
-    Markdownリンク
+    Markdownリンクから文字だけ残す
   */
 
   match =
     s.match(
-      /$begin:math:display$\(\[\^$end:math:display$]+)\]$begin:math:text$\[\^\)\]\*$end:math:text$/
+      /\[([^\]]+)\]\([^)]*\)/
     );
 
 
@@ -1076,9 +919,7 @@ function extractHorseName(cell){
     match[1]
   ){
 
-    return cleanText(
-      match[1]
-    );
+    return match[1].trim();
 
   }
 
@@ -1089,7 +930,7 @@ function extractHorseName(cell){
 
 
 /* =====================================================
-   レースページ解析
+   出馬表解析
 ===================================================== */
 
 function parseRacePage(
@@ -1098,11 +939,18 @@ function parseRacePage(
   raceNo
 ){
 
-  const lines =
+  var lines =
     text.split(/\r?\n/);
 
 
-  const data = {
+  var full =
+    text.replace(
+      /\r?\n/g,
+      " "
+    );
+
+
+  var data = {
 
     raceId:raceId,
 
@@ -1115,11 +963,9 @@ function parseRacePage(
 
     course:"",
 
-    distance:"",
-
     surface:"",
 
-    direction:"",
+    distance:"",
 
     weather:"",
 
@@ -1133,55 +979,10 @@ function parseRacePage(
 
 
   /*
-    全文検索用
+    発走
   */
 
-  const full =
-    text.replace(
-      /\r?\n/g,
-      " "
-    );
-
-
-  let match;
-
-
-  /* レース名 */
-
-  for(
-    const line of lines
-  ){
-
-    const cleaned =
-      cleanText(line);
-
-
-    if(
-      line.startsWith("## ") &&
-      !cleaned.includes("出馬表") &&
-      !cleaned.includes("レース情報")
-    ){
-
-      if(!data.raceName){
-
-        data.raceName =
-          cleaned
-            .replace(
-              /^##\s*/,
-              ""
-            )
-            .trim();
-
-      }
-
-    }
-
-  }
-
-
-  /* 発走 */
-
-  match =
+  var match =
     full.match(
       /(\d{1,2}:\d{2})発走/
     );
@@ -1195,7 +996,9 @@ function parseRacePage(
   }
 
 
-  /* 芝・ダート＋距離 */
+  /*
+    芝・ダート
+  */
 
   match =
     full.match(
@@ -1207,8 +1010,8 @@ function parseRacePage(
 
     data.surface =
       match[1] === "芝"
-        ? "芝"
-        : "ダート";
+      ? "芝"
+      : "ダート";
 
 
     data.distance =
@@ -1217,7 +1020,9 @@ function parseRacePage(
   }
 
 
-  /* 天候 */
+  /*
+    天候
+  */
 
   match =
     full.match(
@@ -1233,7 +1038,9 @@ function parseRacePage(
   }
 
 
-  /* 馬場 */
+  /*
+    馬場
+  */
 
   match =
     full.match(
@@ -1249,7 +1056,9 @@ function parseRacePage(
   }
 
 
-  /* 頭数 */
+  /*
+    頭数
+  */
 
   match =
     full.match(
@@ -1265,7 +1074,9 @@ function parseRacePage(
   }
 
 
-  /* 競馬場 */
+  /*
+    開催場
+  */
 
   match =
     full.match(
@@ -1281,39 +1092,72 @@ function parseRacePage(
   }
 
 
-  /* 方向 */
+  /*
+    レース名
+  */
 
-  match =
-    full.match(
-      /\d{3,4}m\s*$begin:math:text$\(右\|左\|直線\)$end:math:text$/
-    );
+  for(
+    var i=0;
+    i<lines.length;
+    i++
+  ){
+
+    var line =
+      lines[i];
 
 
-  if(match){
+    if(
+      line.indexOf("## ") === 0
+    ){
 
-    data.direction =
-      match[1];
+      var name =
+        cleanText(
+          line
+        ).replace(
+          /^##\s*/,
+          ""
+        );
+
+
+      if(
+        name &&
+        name.indexOf("出馬表") === -1 &&
+        name.indexOf("レース情報") === -1
+      ){
+
+        data.raceName =
+          name;
+
+        break;
+
+      }
+
+    }
 
   }
 
 
-  /* ===================================================
-     出走馬テーブル
-  =================================================== */
+  /*
+    ==========================================
+    馬テーブル
+    ==========================================
+  */
 
-  const horses = [];
+  var horses = [];
 
 
   for(
-    const line of lines
+    var j=0;
+    j<lines.length;
+    j++
   ){
 
-    const trimmed =
-      line.trim();
+    var row =
+      lines[j].trim();
 
 
     if(
-      !trimmed.startsWith("|")
+      row.indexOf("|") !== 0
     ){
 
       continue;
@@ -1321,20 +1165,11 @@ function parseRacePage(
     }
 
 
-    const cells =
-      trimmed
+    var cells =
+      row
         .split("|")
-        .slice(1,-1)
-        .map(
-          function(v){
-            return v.trim();
-          }
-        );
+        .slice(1,-1);
 
-
-    /*
-      必要列数
-    */
 
     if(
       cells.length < 10
@@ -1345,17 +1180,25 @@ function parseRacePage(
     }
 
 
+    for(
+      var c=0;
+      c<cells.length;
+      c++
+    ){
+
+      cells[c] =
+        cells[c].trim();
+
+    }
+
+
     /*
-      cells[1] = 馬番
+      cells[1]が馬番
     */
-
-    const horseNo =
-      cells[1];
-
 
     if(
       !/^\d+$/.test(
-        horseNo
+        cells[1]
       )
     ){
 
@@ -1364,7 +1207,24 @@ function parseRacePage(
     }
 
 
-    const horse = {
+    var number =
+      parseInt(
+        cells[1],
+        10
+      );
+
+
+    if(
+      number < 1 ||
+      number > 18
+    ){
+
+      continue;
+
+    }
+
+
+    var horse = {
 
       frame:
         cleanText(
@@ -1372,15 +1232,7 @@ function parseRacePage(
         ),
 
       number:
-        parseInt(
-          horseNo,
-          10
-        ),
-
-      mark:
-        cleanText(
-          cells[2]
-        ),
+        number,
 
       name:
         extractHorseName(
@@ -1426,9 +1278,7 @@ function parseRacePage(
 
 
     if(
-      horse.name &&
-      horse.number >= 1 &&
-      horse.number <= 18
+      horse.name
     ){
 
       horses.push(
@@ -1446,7 +1296,10 @@ function parseRacePage(
 
   horses.sort(
     function(a,b){
-      return a.number-b.number;
+
+      return a.number -
+             b.number;
+
     }
   );
 
@@ -1455,34 +1308,33 @@ function parseRacePage(
     重複除去
   */
 
-  const seen =
-    new Set();
+  var seen = {};
+
+  var unique = [];
+
+
+  horses.forEach(
+    function(horse){
+
+      if(
+        !seen[horse.number]
+      ){
+
+        seen[horse.number] =
+          true;
+
+        unique.push(
+          horse
+        );
+
+      }
+
+    }
+  );
 
 
   data.horses =
-    horses.filter(
-      function(horse){
-
-        if(
-          seen.has(
-            horse.number
-          )
-        ){
-
-          return false;
-
-        }
-
-
-        seen.add(
-          horse.number
-        );
-
-
-        return true;
-
-      }
-    );
+    unique;
 
 
   return data;
@@ -1491,21 +1343,28 @@ function parseRacePage(
 
 
 /* =====================================================
-   画面表示
+   表示
 ===================================================== */
 
-function renderRaceData(data){
+function renderRace(data){
 
-  const meta =
+  var result =
+    document.getElementById(
+      "resultCard"
+    );
+
+
+  var meta =
     document.getElementById(
       "raceMeta"
     );
 
 
-  meta.innerHTML = "";
+  meta.innerHTML =
+    "";
 
 
-  const items = [
+  var items = [
 
     [
       "レース",
@@ -1524,17 +1383,11 @@ function renderRaceData(data){
 
     [
       "コース",
-      (
-        data.course || "-"
-      ) +
+      (data.course || "-") +
       " " +
-      (
-        data.surface || ""
-      ) +
+      (data.surface || "") +
       " " +
-      (
-        data.distance || ""
-      )
+      (data.distance || "")
     ],
 
     [
@@ -1565,7 +1418,7 @@ function renderRaceData(data){
   items.forEach(
     function(item){
 
-      const div =
+      var div =
         document.createElement(
           "div"
         );
@@ -1593,9 +1446,11 @@ function renderRaceData(data){
   );
 
 
-  /* 馬一覧 */
+  /*
+    馬一覧
+  */
 
-  const tbody =
+  var tbody =
     document.getElementById(
       "horseTable"
     );
@@ -1608,7 +1463,7 @@ function renderRaceData(data){
   data.horses.forEach(
     function(horse){
 
-      const tr =
+      var tr =
         document.createElement(
           "tr"
         );
@@ -1622,11 +1477,11 @@ function renderRaceData(data){
         ) +
         "</td>" +
 
-        "<td><strong>" +
+        "<td>" +
         escapeHtml(
           horse.number
         ) +
-        "</strong></td>" +
+        "</td>" +
 
         '<td class="horse-name">' +
         escapeHtml(
@@ -1691,6 +1546,10 @@ function renderRaceData(data){
     data.horses.length +
     "頭を正常に解析しました。";
 
+
+  result.style.display =
+    "block";
+
 }
 
 
@@ -1701,7 +1560,9 @@ function renderRaceData(data){
 function escapeHtml(value){
 
   return String(
-    value ?? ""
+    value == null
+      ? ""
+      : value
   )
   .replace(
     /&/g,
