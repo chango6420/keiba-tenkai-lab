@@ -2,163 +2,156 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>競馬展開ラボ v0.5</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>競馬展開ラボ v0.5.1</title>
 
 <style>
-* {
-  box-sizing: border-box;
+*{
+  box-sizing:border-box;
 }
 
-body {
-  margin: 0;
-  background: #f4f6f8;
-  color: #1f2937;
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
+body{
+  margin:0;
+  background:#f4f6f8;
+  color:#1f2937;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
 
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 14px;
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:14px;
 }
 
-.header {
-  background: #111827;
-  color: white;
-  padding: 16px;
-  border-radius: 14px;
-  margin-bottom: 12px;
+.header{
+  background:#111827;
+  color:white;
+  border-radius:14px;
+  padding:16px;
+  margin-bottom:12px;
 }
 
-.header h1 {
-  margin: 0 0 6px;
-  font-size: 22px;
+.header h1{
+  margin:0 0 6px;
+  font-size:22px;
 }
 
-.badge {
-  display: inline-block;
-  background: #2563eb;
-  padding: 4px 8px;
-  border-radius: 999px;
-  font-size: 11px;
+.badge{
+  display:inline-block;
+  background:#2563eb;
+  padding:4px 8px;
+  border-radius:999px;
+  font-size:11px;
 }
 
-.card {
-  background: white;
-  border-radius: 14px;
-  padding: 14px;
-  margin-bottom: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,.05);
+.card{
+  background:white;
+  border-radius:14px;
+  padding:14px;
+  margin-bottom:12px;
+  box-shadow:0 2px 10px rgba(0,0,0,.05);
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
 }
 
-label {
-  display: block;
-  margin-bottom: 5px;
-  font-size: 12px;
-  font-weight: bold;
+label{
+  display:block;
+  margin-bottom:5px;
+  font-size:12px;
+  font-weight:bold;
 }
 
 input,
 select,
-button {
-  width: 100%;
-  min-height: 44px;
-  border-radius: 9px;
-  border: 1px solid #d1d5db;
-  background: white;
-  padding: 10px;
-  font-size: 15px;
+button{
+  width:100%;
+  min-height:44px;
+  border-radius:9px;
+  border:1px solid #d1d5db;
+  background:white;
+  padding:10px;
+  font-size:15px;
 }
 
-button {
-  margin-top: 12px;
-  background: #2563eb;
-  color: white;
-  border: none;
-  font-weight: bold;
+button{
+  margin-top:12px;
+  background:#2563eb;
+  color:white;
+  border:0;
+  font-weight:bold;
 }
 
-button:disabled {
-  opacity: .45;
+button:disabled{
+  opacity:.45;
 }
 
-.status {
-  padding: 12px;
-  border-radius: 9px;
-  background: #eef2ff;
-  white-space: pre-wrap;
-  font-size: 13px;
+.status{
+  padding:12px;
+  border-radius:9px;
+  background:#eef2ff;
+  white-space:pre-wrap;
+  font-size:13px;
 }
 
-.status.ok {
-  background: #ecfdf5;
-  color: #065f46;
+.status.ok{
+  background:#ecfdf5;
+  color:#065f46;
 }
 
-.status.error {
-  background: #fef2f2;
-  color: #991b1b;
+.status.error{
+  background:#fef2f2;
+  color:#991b1b;
 }
 
-.small {
-  font-size: 11px;
-  color: #6b7280;
-  line-height: 1.6;
+.result-title{
+  font-size:18px;
+  font-weight:bold;
+  margin-bottom:10px;
 }
 
-.result-title {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 10px;
+.horse{
+  border:1px solid #e5e7eb;
+  border-radius:10px;
+  padding:10px;
+  margin-bottom:8px;
 }
 
-.horse {
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  padding: 10px;
-  margin-bottom: 8px;
+.horse-name{
+  font-weight:bold;
 }
 
-.horse-name {
-  font-weight: bold;
+.horse-data{
+  margin-top:4px;
+  font-size:12px;
+  color:#4b5563;
+  line-height:1.5;
 }
 
-.horse-data {
-  margin-top: 4px;
-  font-size: 12px;
-  color: #4b5563;
-  line-height: 1.5;
+.raw{
+  margin-top:10px;
+  background:#111827;
+  color:#e5e7eb;
+  padding:10px;
+  border-radius:8px;
+  overflow:auto;
+  font-size:11px;
+  max-height:350px;
+  white-space:pre-wrap;
 }
 
-.raw {
-  margin-top: 12px;
-  background: #111827;
-  color: #e5e7eb;
-  padding: 10px;
-  border-radius: 8px;
-  overflow-x: auto;
-  font-size: 11px;
-  max-height: 300px;
+.small{
+  font-size:11px;
+  color:#6b7280;
+  line-height:1.6;
 }
 
-@media (max-width: 600px) {
-  .grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .header h1 {
-    font-size: 20px;
+@media(max-width:600px){
+  .grid{
+    grid-template-columns:1fr 1fr;
   }
 }
 </style>
@@ -168,83 +161,85 @@ button:disabled {
 
 <div class="container">
 
-  <div class="header">
-    <h1>
-      競馬展開ラボ
-      <span class="badge">v0.5 NETKEIBA TEST</span>
-    </h1>
-    <div style="font-size:12px;color:#cbd5e1;">
-      netkeiba出馬表の取得テスト版
-    </div>
+<div class="header">
+  <h1>
+    競馬展開ラボ
+    <span class="badge">v0.5.1 NETKEIBA TEST</span>
+  </h1>
+
+  <div style="font-size:12px;color:#cbd5e1;">
+    Jina Reader経由・netkeiba取得テスト
   </div>
+</div>
 
-  <div class="card">
 
-    <div class="grid">
+<div class="card">
 
-      <div>
-        <label>日付</label>
-        <input id="raceDate" type="date">
-      </div>
+  <div class="grid">
 
-      <div>
-        <label>開催</label>
-        <select id="venue">
-          <option value="">開催を取得してください</option>
-        </select>
-      </div>
-
+    <div>
+      <label>日付</label>
+      <input id="raceDate" type="date">
     </div>
 
-    <button id="getVenues">
-      ① 開催を取得
-    </button>
-
-    <div class="grid" style="margin-top:10px;">
-
-      <div>
-        <label>レース</label>
-        <select id="raceSelect" disabled>
-          <option value="">開催を選択してください</option>
-        </select>
-      </div>
-
-      <div>
-        <label>取得方法</label>
-        <select id="fetchMode">
-          <option value="proxy">プロキシ経由</option>
-          <option value="direct">直接アクセス</option>
-        </select>
-      </div>
-
+    <div>
+      <label>開催</label>
+      <select id="venue">
+        <option value="">まず開催を取得</option>
+      </select>
     </div>
 
-    <button id="getRace" disabled>
-      ② 出馬表を取得
-    </button>
+  </div>
+
+  <button id="getVenues">
+    ① 開催を取得
+  </button>
+
+
+  <div style="margin-top:12px;">
+
+    <label>レース</label>
+
+    <select id="raceSelect" disabled>
+      <option value="">開催を選択してください</option>
+    </select>
 
   </div>
 
-  <div id="status" class="card status">
-    待機中
-  </div>
-
-  <div id="result" class="card" style="display:none;">
-  </div>
-
-  <div class="card small">
-
-    <b>v0.5について</b><br><br>
-
-    今回は「netkeibaからブラウザ経由でデータを取得できるか」の確認版です。<br>
-    まず取得成功を確認し、その後のバージョンで取得データを予想エンジンへ接続します。<br><br>
-
-    ※netkeiba側のアクセス制限やブラウザのCORS制限によって取得できない場合があります。
-    その場合は取得方式を変更します。
-
-  </div>
+  <button id="getRace" disabled>
+    ② 出馬表を取得
+  </button>
 
 </div>
+
+
+<div id="status" class="card status">
+待機中
+</div>
+
+
+<div id="result" class="card" style="display:none;">
+</div>
+
+
+<div class="card small">
+
+<b>v0.5.1について</b><br><br>
+
+今回の目的は、まずnetkeibaのページを取得できるか確認することです。<br><br>
+
+① 日付を選択<br>
+② 開催を取得<br>
+③ 開催を選択<br>
+④ レースを選択<br>
+⑤ 出馬表を取得<br><br>
+
+取得成功後に、馬番・馬名・斤量・騎手・オッズなどを自動入力する版へ進みます。
+
+</div>
+
+</div>
+
 
 <script>
 
@@ -253,100 +248,111 @@ const $ = id => document.getElementById(id);
 const raceDate = $("raceDate");
 const venue = $("venue");
 const raceSelect = $("raceSelect");
-const fetchMode = $("fetchMode");
 const getVenues = $("getVenues");
 const getRace = $("getRace");
 const status = $("status");
 const result = $("result");
 
 
-// 今日の日付
+// ------------------------------------
+// 初期日付
+// ------------------------------------
+
 const today = new Date();
 
 raceDate.value =
   today.getFullYear() +
   "-" +
-  String(today.getMonth() + 1).padStart(2, "0") +
+  String(today.getMonth()+1).padStart(2,"0") +
   "-" +
-  String(today.getDate()).padStart(2, "0");
+  String(today.getDate()).padStart(2,"0");
 
 
-// ------------------------------
+// ------------------------------------
 // 共通
-// ------------------------------
+// ------------------------------------
 
-function setStatus(text, type = "") {
-
-  status.textContent = text;
-
-  status.className = "card status";
-
-  if (type) {
-    status.classList.add(type);
-  }
-}
-
-
-function cleanText(text) {
+function clean(text){
 
   return (text || "")
-    .replace(/\s+/g, " ")
+    .replace(/\s+/g," ")
     .trim();
 
 }
 
 
-// ------------------------------
-// URL
-// ------------------------------
+function setStatus(text,type=""){
 
-function netkeibaDayURL(dateString) {
+  status.textContent = text;
 
-  const d = dateString.replace(/-/g, "");
+  status.className = "card status";
 
-  return "https://race.netkeiba.com/top/race_list.html?kaisai_date=" + d;
-
-}
-
-
-function netkeibaRaceURL(raceId) {
-
-  return "https://race.netkeiba.com/race/shutuba.html?race_id=" + raceId;
-
-}
-
-
-function proxyURL(url) {
-
-  return "https://api.allorigins.win/raw?url=" +
-    encodeURIComponent(url);
-
-}
-
-
-// ------------------------------
-// HTML取得
-// ------------------------------
-
-async function fetchHTML(url) {
-
-  let targetURL = url;
-
-  if (fetchMode.value === "proxy") {
-
-    targetURL = proxyURL(url);
-
+  if(type){
+    status.classList.add(type);
   }
 
-  const response = await fetch(targetURL, {
-    method: "GET",
-    cache: "no-store"
-  });
+}
 
-  if (!response.ok) {
+
+// ------------------------------------
+// netkeiba URL
+// ------------------------------------
+
+function getDayURL(date){
+
+  const d =
+    date.replace(/-/g,"");
+
+  return (
+    "https://race.netkeiba.com/top/race_list.html" +
+    "?kaisai_date=" +
+    d
+  );
+
+}
+
+
+function getRaceURL(raceId){
+
+  return (
+    "https://race.netkeiba.com/race/shutuba.html" +
+    "?race_id=" +
+    raceId
+  );
+
+}
+
+
+// ------------------------------------
+// Jina Reader
+// ------------------------------------
+
+function jinaURL(url){
+
+  return (
+    "https://r.jina.ai/" +
+    url
+  );
+
+}
+
+
+async function fetchJina(url){
+
+  const response =
+    await fetch(
+      jinaURL(url),
+      {
+        method:"GET",
+        cache:"no-store"
+      }
+    );
+
+  if(!response.ok){
 
     throw new Error(
-      "HTTPエラー: " + response.status
+      "Jina HTTP " +
+      response.status
     );
 
   }
@@ -356,125 +362,108 @@ async function fetchHTML(url) {
 }
 
 
-function parseHTML(html) {
-
-  return new DOMParser()
-    .parseFromString(html, "text/html");
-
-}
-
-
-// ------------------------------
+// ------------------------------------
 // race_id抽出
-// ------------------------------
+// ------------------------------------
 
-function extractRaceId(href) {
+function extractRaceIds(text){
 
-  if (!href) {
-    return null;
-  }
+  const regex =
+    /race_id=(\d{12})/g;
 
-  const match =
-    href.match(/[?&]race_id=(\d{12})/);
+  const ids = [];
 
-  if (!match) {
-    return null;
-  }
+  let match;
 
-  return match[1];
+  while(
+    (match = regex.exec(text)) !== null
+  ){
 
-}
+    if(!ids.includes(match[1])){
 
+      ids.push(match[1]);
 
-// ------------------------------
-// 開催一覧解析
-// ------------------------------
-
-function parseVenues(document) {
-
-  const venueMap = {};
-
-  const links =
-    [...document.querySelectorAll("a[href*='race_id=']")];
-
-  links.forEach(link => {
-
-    const href =
-      link.getAttribute("href") || "";
-
-    const raceId =
-      extractRaceId(href);
-
-    if (!raceId) {
-      return;
     }
 
-    const parent =
-      link.closest("tr");
+  }
 
-    const text =
-      cleanText(
-        parent
-          ? parent.innerText
-          : link.innerText
-      );
+  return ids;
 
-    const venueMatch =
-      text.match(
-        /(札幌|函館|福島|新潟|東京|中山|中京|京都|阪神|小倉)/
-      );
+}
+
+
+// ------------------------------------
+// レース情報を周辺テキストから作る
+// ------------------------------------
+
+function makeRaceList(text){
+
+  const ids =
+    extractRaceIds(text);
+
+  return ids.map((id,index)=>{
+
+    const pos =
+      text.indexOf(id);
+
+    let around =
+      "";
+
+    if(pos >= 0){
+
+      around =
+        text.substring(
+          Math.max(0,pos-180),
+          Math.min(text.length,pos+180)
+        );
+
+    }
 
     const raceMatch =
-      text.match(/(\d{1,2})R/);
+      around.match(/(\d{1,2})R/);
+
+    const raceNumber =
+      raceMatch
+        ? raceMatch[1]
+        : String(index+1);
+
+    const venueMatch =
+      around.match(
+        /(札幌|函館|福島|新潟|東京|中山|中京|京都|阪神|小倉)/
+      );
 
     const venueName =
       venueMatch
         ? venueMatch[1]
         : "開催";
 
-    const raceNumber =
-      raceMatch
-        ? raceMatch[1]
-        : "";
+    return {
 
-    if (!venueMap[venueName]) {
-      venueMap[venueName] = [];
-    }
+      id:id,
 
-    const exists =
-      venueMap[venueName]
-        .some(x => x.id === raceId);
+      number:raceNumber,
 
-    if (!exists) {
+      venue:venueName,
 
-      venueMap[venueName].push({
+      text:clean(around)
 
-        id: raceId,
-
-        number: raceNumber,
-
-        text: text
-
-      });
-
-    }
+    };
 
   });
-
-  return venueMap;
 
 }
 
 
-// ------------------------------
+// ------------------------------------
 // ① 開催取得
-// ------------------------------
+// ------------------------------------
 
-async function loadVenues() {
+async function loadVenues(){
 
-  const date = raceDate.value;
+  const date =
+    raceDate.value;
 
-  if (!date) {
+  if(!date){
 
     setStatus(
       "日付を選択してください。",
@@ -485,140 +474,221 @@ async function loadVenues() {
 
   }
 
+
   venue.innerHTML =
-    "<option>取得中...</option>";
+    '<option value="">取得中...</option>';
 
   raceSelect.innerHTML =
-    "<option>開催を選択してください</option>";
+    '<option value="">開催を選択してください</option>';
 
   raceSelect.disabled = true;
 
   getRace.disabled = true;
 
+
   setStatus(
-    "netkeibaから開催情報を取得しています..."
+    "Jina Reader経由でnetkeibaを取得中...\n少し待ってください。"
   );
 
-  try {
+
+  try{
 
     const url =
-      netkeibaDayURL(date);
+      getDayURL(date);
 
-    const html =
-      await fetchHTML(url);
+    const text =
+      await fetchJina(url);
 
-    const document =
-      parseHTML(html);
 
-    const venues =
-      parseVenues(document);
-
-    const names =
-      Object.keys(venues);
-
-    if (!names.length) {
+    if(!text){
 
       throw new Error(
-        "開催情報を認識できませんでした。"
+        "空のデータが返りました。"
       );
 
     }
 
-    venue.innerHTML =
-      '<option value="">開催を選択</option>';
 
-    names.forEach(name => {
+    const races =
+      makeRaceList(text);
 
-      const option =
-        document.createElement("option");
 
-      option.value = name;
+    if(!races.length){
 
-      option.textContent =
-        name +
-        " (" +
-        venues[name].length +
-        "レース候補)";
+      throw new Error(
+        "ページは取得できましたが、race_idを認識できませんでした。"
+      );
 
-      option.dataset.races =
-        JSON.stringify(
-          venues[name]
-        );
+    }
 
-      venue.appendChild(option);
+
+    // 開催ごとに分類
+
+    const venueMap = {};
+
+
+    races.forEach(race=>{
+
+      if(!venueMap[race.venue]){
+
+        venueMap[race.venue] = [];
+
+      }
+
+      venueMap[race.venue].push(race);
 
     });
 
+
+    venue.innerHTML =
+      '<option value="">開催を選択</option>';
+
+
+    Object.keys(venueMap)
+      .forEach(name=>{
+
+        const option =
+          document.createElement("option");
+
+        option.value =
+          name;
+
+        option.textContent =
+          name +
+          "（" +
+          venueMap[name].length +
+          "レース）";
+
+        option.dataset.races =
+          JSON.stringify(
+            venueMap[name]
+          );
+
+        venue.appendChild(option);
+
+      });
+
+
+    // 開催が正確に判定できなかった場合でも
+    // 「取得成功」として候補を表示
+
     setStatus(
-      "開催情報の取得に成功しました。\n" +
+      "netkeibaページの取得に成功しました！\n" +
+      "race_idを " +
+      races.length +
+      "件 認識しました。\n\n" +
       "開催を選択してください。",
       "ok"
     );
 
-  } catch (error) {
+
+    // デバッグ情報
+
+    result.innerHTML =
+      '<div class="result-title">' +
+      "取得確認" +
+      "</div>" +
+
+      "<p>" +
+      "認識したrace_id：" +
+      races.length +
+      "件" +
+      "</p>" +
+
+      '<details>' +
+      "<summary>取得したデータを確認</summary>" +
+      '<div class="raw">' +
+      text.substring(0,10000) +
+      "</div>" +
+      "</details>";
+
+
+    result.style.display =
+      "block";
+
+
+  }catch(error){
 
     setStatus(
-      "開催情報の取得に失敗しました。\n\n" +
-      error.message +
-      "\n\n" +
-      "「直接アクセス」に変更してもう一度試すこともできます。",
+      "取得失敗\n\n" +
+      error.message,
       "error"
     );
 
-    venue.innerHTML =
-      '<option value="">取得失敗</option>';
+
+    result.innerHTML =
+      '<div class="result-title">' +
+      "取得エラー詳細" +
+      "</div>" +
+
+      "<p>" +
+      error.message +
+      "</p>";
+
+
+    result.style.display =
+      "block";
 
   }
 
 }
 
 
-// ------------------------------
-// 開催変更
-// ------------------------------
+// ------------------------------------
+// 開催選択
+// ------------------------------------
 
 venue.addEventListener(
   "change",
-  function() {
+  function(){
 
     raceSelect.innerHTML =
       '<option value="">レースを選択</option>';
 
-    raceSelect.disabled = true;
+    raceSelect.disabled =
+      true;
 
-    getRace.disabled = true;
+    getRace.disabled =
+      true;
+
 
     const option =
       venue.options[
         venue.selectedIndex
       ];
 
-    if (!option.dataset.races) {
+
+    if(!option.dataset.races){
+
       return;
+
     }
+
 
     let races;
 
-    try {
+    try{
 
       races =
         JSON.parse(
           option.dataset.races
         );
 
-    } catch {
+    }catch{
 
       return;
 
     }
 
+
     races.sort(
-      (a, b) =>
-        Number(a.number || 99) -
-        Number(b.number || 99)
+      (a,b)=>
+        Number(a.number) -
+        Number(b.number)
     );
 
-    races.forEach(race => {
+
+    races.forEach(race=>{
 
       const option =
         document.createElement("option");
@@ -627,29 +697,30 @@ venue.addEventListener(
         race.id;
 
       option.textContent =
-        (race.number
-          ? race.number + "R"
-          : "レース") +
-        "  " +
-        race.text.slice(0, 80);
+        race.number +
+        "R";
 
-      raceSelect.appendChild(option);
+      raceSelect.appendChild(
+        option
+      );
 
     });
 
-    raceSelect.disabled = false;
+
+    raceSelect.disabled =
+      false;
 
   }
 );
 
 
-// ------------------------------
-// レース変更
-// ------------------------------
+// ------------------------------------
+// レース選択
+// ------------------------------------
 
 raceSelect.addEventListener(
   "change",
-  function() {
+  function(){
 
     getRace.disabled =
       !raceSelect.value;
@@ -658,115 +729,128 @@ raceSelect.addEventListener(
 );
 
 
-// ------------------------------
+// ------------------------------------
 // 馬名抽出
-// ------------------------------
+// ------------------------------------
 
-function extractHorses(document) {
+function extractHorseNames(text){
 
-  const horses = [];
+  const names = [];
 
-  const links =
-    [...document.querySelectorAll(
-      "a[href*='/horse/']"
-    )];
+  // markdownリンク形式
+  const linkRegex =
+    /\[([^\]]+)\]\(https?:\/\/[^)]*\/horse\/[^)]*\)/g;
 
-  links.forEach(link => {
+  let match;
+
+  while(
+    (match = linkRegex.exec(text)) !== null
+  ){
 
     const name =
-      cleanText(link.innerText);
+      clean(match[1]);
 
-    if (!name) {
-      return;
-    }
+    if(
+      name &&
+      name.length <= 30 &&
+      !names.includes(name)
+    ){
 
-    const row =
-      link.closest("tr");
-
-    const rowText =
-      cleanText(
-        row
-          ? row.innerText
-          : ""
-      );
-
-    const exists =
-      horses.some(
-        h => h.name === name
-      );
-
-    if (!exists) {
-
-      horses.push({
-
-        name: name,
-
-        row: rowText
-
-      });
+      names.push(name);
 
     }
 
-  });
+  }
 
-  return horses;
+
+  // HTMLリンク形式にも対応
+  const htmlRegex =
+    /<a[^>]+href=["'][^"']*\/horse\/[^"']*["'][^>]*>(.*?)<\/a>/gi;
+
+  while(
+    (match = htmlRegex.exec(text)) !== null
+  ){
+
+    const name =
+      clean(
+        match[1]
+          .replace(/<[^>]+>/g,"")
+      );
+
+    if(
+      name &&
+      name.length <= 30 &&
+      !names.includes(name)
+    ){
+
+      names.push(name);
+
+    }
+
+  }
+
+
+  return names;
 
 }
 
 
-// ------------------------------
+// ------------------------------------
 // ② 出馬表取得
-// ------------------------------
+// ------------------------------------
 
-async function loadRace() {
+async function loadRace(){
 
   const raceId =
     raceSelect.value;
 
-  if (!raceId) {
+  if(!raceId){
 
     return;
 
   }
 
+
   result.style.display =
     "none";
 
+
   setStatus(
-    "netkeibaから出馬表を取得しています..."
+    "選択したレースの出馬表を取得中..."
   );
 
-  try {
+
+  try{
 
     const url =
-      netkeibaRaceURL(raceId);
+      getRaceURL(raceId);
 
-    const html =
-      await fetchHTML(url);
 
-    const document =
-      parseHTML(html);
+    const text =
+      await fetchJina(url);
 
-    const horses =
-      extractHorses(document);
 
-    const title =
-      cleanText(document.title);
-
-    if (!horses.length) {
+    if(!text){
 
       throw new Error(
-        "ページは取得できましたが、馬名を認識できませんでした。"
+        "空のデータが返りました。"
       );
 
     }
 
+
+    const horses =
+      extractHorseNames(text);
+
+
     let output = "";
+
 
     output +=
       '<div class="result-title">' +
-      "取得成功" +
+      "出馬表取得結果" +
       "</div>";
+
 
     output +=
       "<p>" +
@@ -774,11 +858,6 @@ async function loadRace() {
       raceId +
       "</p>";
 
-    output +=
-      "<p>" +
-      "<b>ページ：</b>" +
-      title +
-      "</p>";
 
     output +=
       "<p>" +
@@ -787,40 +866,43 @@ async function loadRace() {
       "頭" +
       "</p>";
 
+
+    if(horses.length){
+
+      horses.forEach(
+        (name,index)=>{
+
+          output +=
+            '<div class="horse">' +
+            '<div class="horse-name">' +
+            (index+1) +
+            ". " +
+            name +
+            "</div>" +
+            "</div>";
+
+        }
+
+      );
+
+    }else{
+
+      output +=
+        "<p>" +
+        "ページは取得できましたが、馬名を認識できませんでした。" +
+        "</p>";
+
+    }
+
+
     output +=
-      "<hr>";
-
-    horses.forEach(
-      (horse, index) => {
-
-        output +=
-          '<div class="horse">';
-
-        output +=
-          '<div class="horse-name">' +
-          (index + 1) +
-          ". " +
-          horse.name +
-          "</div>";
-
-        output +=
-          '<div class="horse-data">' +
-          horse.row +
-          "</div>";
-
-        output +=
-          "</div>";
-
-      }
-    );
-
-    output +=
-      '<details style="margin-top:15px;">' +
-      "<summary>取得URL</summary>" +
+      "<details>" +
+      "<summary>取得した本文を確認</summary>" +
       '<div class="raw">' +
-      url +
+      text.substring(0,20000) +
       "</div>" +
       "</details>";
+
 
     result.innerHTML =
       output;
@@ -828,31 +910,46 @@ async function loadRace() {
     result.style.display =
       "block";
 
-    setStatus(
-      "出馬表の取得に成功しました！\n" +
-      horses.length +
-      "頭の馬名を認識しました。",
-      "ok"
-    );
 
-  } catch (error) {
+    if(horses.length){
+
+      setStatus(
+        "出馬表の取得に成功しました！\n" +
+        horses.length +
+        "頭の馬名を認識しました。",
+        "ok"
+      );
+
+    }else{
+
+      setStatus(
+        "ページ取得は成功しました。\n" +
+        "ただし馬名の自動認識はできませんでした。",
+        "error"
+      );
+
+    }
+
+
+  }catch(error){
 
     result.innerHTML =
-      "<div class='result-title'>" +
-      "取得テスト失敗" +
+      '<div class="result-title">' +
+      "出馬表取得エラー" +
       "</div>" +
+
       "<p>" +
-      cleanText(error.message) +
+      error.message +
       "</p>";
+
 
     result.style.display =
       "block";
 
+
     setStatus(
       "出馬表の取得に失敗しました。\n\n" +
-      error.message +
-      "\n\n" +
-      "この結果も重要です。v0.5では、まずどこまで取得できるかを確認します。",
+      error.message,
       "error"
     );
 
@@ -861,9 +958,9 @@ async function loadRace() {
 }
 
 
-// ------------------------------
+// ------------------------------------
 // ボタン
-// ------------------------------
+// ------------------------------------
 
 getVenues.addEventListener(
   "click",
