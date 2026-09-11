@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>競馬展開ラボ v0.2</title>
+<style>
+:root{--bg:#0d1117;--card:#161b22;--line:#30363d;--text:#f0f3f6;--muted:#9da7b3;--accent:#58a6ff;--good:#3fb950}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif}
+main{max-width:900px;margin:auto;padding:14px 12px 60px}.top{display:flex;justify-content:space-between;gap:10px;align-items:center}.title{font-size:22px;font-weight:800}.badge{font-size:12px;padding:5px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:12px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+label{font-size:11px;color:var(--muted);display:block;margin-bottom:4px}select,input,button{width:100%;min-height:42px;border-radius:10px;border:1px solid var(--line);background:#0d1117;color:var(--text);padding:8px;font-size:15px}
+button{background:#21262d;font-weight:700;cursor:pointer}.primary{background:#1f6feb;border-color:#1f6feb}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px}.tab.active{background:#1f6feb;border-color:#1f6feb}
+.section{display:none}.section.active{display:block}.horse{display:grid;grid-template-columns:38px 1fr 54px 52px;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.no{font-weight:800}.name{font-weight:700}.sub{font-size:11px;color:var(--muted);margin-top:3px}.mark{font-size:20px;text-align:center}.rate{text-align:right}
+.track{position:relative;height:270px;background:linear-gradient(#1b222c,#11161d);border:1px solid var(--line);border-radius:12px;overflow:hidden}.runner{position:absolute;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#f0f3f6;color:#111;font-size:12px;font-weight:900;transition:all .45s linear}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.kpi{padding:10px;background:#0d1117;border:1px solid var(--line);border-radius:10px;text-align:center}.kpi b{display:block;font-size:20px;margin-top:4px}
+.status{font-size:12px;color:var(--muted);line-height:1.5}.ok{color:var(--good)}.warn{color:#d29922}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<main>
+<div class="top"><div class="title">競馬展開ラボ</div><div class="badge">v0.2 開発版</div></div>
+
+<div class="card">
+<div class="grid">
+<div><label>開催日</label><input id="date" type="date" value="2026-09-11"></div>
+<div><label>競馬場</label><select id="course"><option>東京</option><option>中山</option><option>京都</option><option>阪神</option><option>中京</option><option>新潟</option><option>小倉</option><option>福島</option><option>札幌</option><option>函館</option></select></div>
+<div><label>レース</label><select id="raceNo"></select></div>
+<div><label>距離</label><select id="distance"><option>1000</option><option>1200</option><option>1400</option><option>1600</option><option>1800</option><option>2000</option><option>2200</option><option>2400</option><option>2500</option><option>2600</option><option>3000</option><option>3200</option><option>3400</option><option>3600</option></select></div>
+</div>
+<div class="grid" style="margin-top:8px">
+<div><label>芝/ダート</label><select id="surface"><option>芝</option><option>ダート</option><option>障害</option></select></div>
+<div><label>馬場</label><select id="going"><option>良</option><option>稍重</option><option>重</option><option>不良</option></select></div>
+<div style="grid-column:span 2"><label>Backend URL（実データ接続用）</label><input id="apiBase" placeholder="将来ここへAPIを接続"></div>
+</div>
+<button class="primary" style="margin-top:10px" onclick="loadRace()">この条件のレースを読み込む</button>
+<div id="status" class="status" style="margin-top:8px"></div>
+</div>
+
+<div class="tabs">
+<button class="tab active" onclick="tab('prediction',this)">予想</button>
+<button class="tab" onclick="tab('lineup',this)">隊列</button>
+<button class="tab" onclick="tab('pedigree',this)">血統</button>
+<button class="tab" onclick="tab('verify',this)">検証</button>
+</div>
+
+<section id="prediction" class="section active">
+<div class="card"><div class="kpis"><div class="kpi">想定ペース<b id="pace">M</b></div><div class="kpi">本命<b id="mainMark">—</b></div><div class="kpi">頭数<b id="count">0</b></div></div></div>
+<div class="card"><div id="horses"></div></div>
+</section>
+
+<section id="lineup" class="section">
+<div class="card">
+<div style="display:flex;gap:8px"><button onclick="startAnim()">START</button><button onclick="stopAnim()">STOP</button><button onclick="speedUp()">速度+</button></div>
+<div class="track" id="track" style="margin-top:10px"></div>
+<div class="status" style="margin-top:8px">隊列の変化だけをアニメーション表示します。</div>
+</div>
+</section>
+
+<section id="pedigree" class="section">
+<div class="card"><div id="pedigreeBox"></div></div>
+</section>
+
+<section id="verify" class="section">
+<div class="card">
+<label>実走3F</label><input id="actual3f" inputmode="decimal" placeholder="例 34.8">
+<label style="margin-top:8px">実際の展開・予想との差分</label><input id="verifyMemo" placeholder="例：想定より前が速かった">
+<button class="primary" style="margin-top:10px" onclick="saveVerify()">検証結果を保存</button>
+<div id="verifyStatus" class="status" style="margin-top:8px"></div>
+</div>
+</section>
+</main>
+
+<script>
+let race=null,timer=null,animStep=0,speed=1;
+const $=id=>document.getElementById(id);
+
+function tab(id,btn){
+ document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
+ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+ $(id).classList.add('active');btn.classList.add('active');
+}
+function base(){return $('apiBase').value.trim().replace(/\/$/,'');}
+
+async function loadRace(){
+ const b=base();
+ if(!b){$('status').textContent='Backend未接続のため、現在はサンプルデータを表示しています。';$('status').className='status warn';loadDemo();return;}
+ try{
+  const r=await fetch(b+'/api/races?date='+encodeURIComponent($('date').value)+'&course='+encodeURIComponent($('course').value));
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  const d=await r.json();if(!d.races?.length)throw new Error('該当レースなし');
+  race=d.races[0];renderRace();$('status').textContent='Backendからデータを取得しました。';$('status').className='status ok';
+ }catch(e){$('status').textContent='Backend接続失敗。サンプルデータを表示しています。';$('status').className='status warn';loadDemo();}
+}
+function loadDemo(){
+ race={id:'demo',date:$('date').value,course:$('course').value,race_no:1,name:'サンプルレース',surface:$('surface').value,distance:Number($('distance').value),going:$('going').value,
+ horses:[
+ {no:1,name:'サンプルホースA',style:'逃げ',second_leg:8,training_score:86,pedigree_score:82,position_score:84,win_rate:24,father:'ロードカナロア',mother:'サンプルマザーA',damsire:'ディープインパクト'},
+ {no:2,name:'サンプルホースB',style:'先行',second_leg:7,training_score:82,pedigree_score:88,position_score:86,win_rate:20,father:'ドレフォン',mother:'サンプルマザーB',damsire:'スペシャルウィーク'},
+ {no:3,name:'サンプルホースC',style:'差し',second_leg:5,training_score:90,pedigree_score:84,position_score:80,win_rate:18,father:'モーリス',mother:'サンプルマザーC',damsire:'Holy Roman Emperor'},
+ {no:4,name:'サンプルホースD',style:'追込',second_leg:3,training_score:78,pedigree_score:86,position_score:76,win_rate:12,father:'ルーラーシップ',mother:'サンプルマザーD',damsire:'ステイゴールド'}
+ ]};renderRace();
+}
+function score(h){return(h.training_score||0)*.4+(h.pedigree_score||0)*.3+(h.position_score||0)*.3}
+function calcPace(h){let n=h.filter(x=>['逃げ','先行'].includes(x.style)).length;return n>=4?'H':n<=1?'S':'M'}
+function renderRace(){
+ const hs=[...race.horses].sort((a,b)=>score(b)-score(a));
+ $('count').textContent=race.horses.length;$('pace').textContent=calcPace(race.horses);$('mainMark').textContent='◎ '+hs[0].name;
+ $('horses').innerHTML=hs.map((h,i)=>`<div class="horse"><div class="no">${h.no}</div><div><div class="name">${['◎','○','▲','△',''][i]||''} ${h.name}</div><div class="sub">${h.style} / 二の脚 ${h.second_leg??'不明'} / 血統評価 ${h.pedigree_score??'不明'}</div></div><div class="mark">${['◎','○','▲','△',''][i]||''}</div><div class="rate">${h.win_rate??'—'}%</div></div>`).join('');
+ $('pedigreeBox').innerHTML=hs.map(h=>`<div style="padding:10px 0;border-bottom:1px solid #30363d"><b>${h.no}. ${h.name}</b><div class="sub">父: ${h.father||'不明'} / 母: ${h.mother||'不明'} / 母父: ${h.damsire||'不明'}</div><div class="sub">血統データ: 未確認（サンプル）</div></div>`).join('');
+ setupTrack(hs);
+}
+function setupTrack(hs){$('track').innerHTML='';hs.forEach((h,i)=>{let d=document.createElement('div');d.className='runner';d.id='r'+i;d.textContent=h.no;d.style.top=(35+i*45)+'px';d.style.left=(8+i*8)+'%';$('track').appendChild(d)});animStep=0}
+function startAnim(){stopAnim();animStep=0;timer=setInterval(()=>{animStep++;let p=animStep%5;document.querySelectorAll('.runner').forEach((r,i)=>{let q=[[8+i*8,35+i*45],[25+i*4,25+i*45],[48+i*3,55+i*30],[70+i*4,30+i*45],[88-i*5,35+i*40]][p];r.style.left=q[0]+'%';r.style.top=q[1]+'px'})},650/speed)}
+function stopAnim(){if(timer){clearInterval(timer);timer=null}}
+function speedUp(){speed=Math.min(3,speed+.5);if(timer)startAnim()}
+function saveVerify(){let o={race_id:race?.id,actual3f:$('actual3f').value,memo:$('verifyMemo').value,saved_at:new Date().toISOString()};localStorage.setItem('keiba_verify_'+(race?.id||'demo'),JSON.stringify(o));$('verifyStatus').textContent='保存しました。'}
+for(let i=1;i<=12;i++)$('raceNo').insertAdjacentHTML('beforeend',`<option>${i}R</option>`);
+loadDemo();
+</script>
+</body>
+</html>
