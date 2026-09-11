@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<title>競馬展開ラボ</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;background:#f3f4f6;color:#111827}
+header{position:sticky;top:0;z-index:5;background:#111827;color:white;padding:14px 16px;font-weight:800;font-size:20px}
+main{max-width:720px;margin:auto;padding:12px 12px 80px}.card{background:white;border-radius:14px;padding:14px;margin:10px 0;box-shadow:0 2px 8px #00000010}
+h2{font-size:16px;margin:0 0 10px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+label{font-size:12px;color:#6b7280}select,input,button{width:100%;font-size:16px;border:1px solid #d1d5db;border-radius:10px;padding:11px;background:white}
+button{background:#111827;color:white;border:0;font-weight:700;margin-top:8px}.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.tab{background:#e5e7eb;color:#374151;margin:0}.tab.active{background:#111827;color:white}
+.hidden{display:none}.pace{font-size:28px;font-weight:900}.muted{color:#6b7280;font-size:13px}.horse{display:grid;grid-template-columns:40px 1fr auto;gap:8px;align-items:center;border-top:1px solid #eee;padding:10px 0}.num{font-weight:800;text-align:center}.mark{font-weight:900;font-size:20px}.bar{height:8px;background:#e5e7eb;border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:#111827}.row{display:flex;justify-content:space-between;gap:8px}.notice{background:#fff7ed;color:#9a3412;border-radius:10px;padding:10px;font-size:13px}
+#track{height:260px;background:linear-gradient(#d1fae5,#fef3c7);border-radius:14px;position:relative;overflow:hidden;border:1px solid #d1d5db}.lane{position:absolute;left:0;right:0;border-top:1px dashed #ffffffaa}.runner{position:absolute;width:28px;height:28px;border-radius:50%;background:#111827;color:white;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:800;transition:left .7s ease,top .7s ease}
+</style>
+</head>
+<body>
+<header>🏇 競馬展開ラボ</header>
+<main>
+<div class="card">
+<h2>レース選択</h2>
+<div class="grid">
+<div><label>開催日</label><select id="date"><option>2026/09/13</option><option>2026/09/12</option></select></div>
+<div><label>競馬場</label><select id="course"><option>中山</option><option>阪神</option><option>東京</option><option>京都</option></select></div>
+<div><label>レース</label><select id="race"></select></div>
+<div><label>距離</label><select id="dist"><option>1200m</option><option>1400m</option><option selected>1600m</option><option>1800m</option><option>2000m</option><option>2400m</option><option>3000m</option></select></div>
+</div>
+<div class="notice" style="margin-top:10px">現在は動作確認用のサンプルデータです。リアルタイム競馬データは後から正式なデータ接続を追加します。</div>
+<button onclick="analyze()">このレースを分析する</button>
+</div>
+
+<div class="card">
+<div class="tabs">
+<button class="tab active" onclick="tab('predict',this)">予想</button>
+<button class="tab" onclick="tab('line',this)">隊列</button>
+<button class="tab" onclick="tab('ped',this)">血統</button>
+<button class="tab" onclick="tab('verify',this)">検証</button>
+</div>
+</div>
+
+<section id="predict">
+<div class="card"><h2>展開予想</h2><div class="row"><span>想定ペース</span><span class="pace" id="pace">M</span></div><div class="muted" id="paceText">先行馬の数と二の脚を基準に判定</div></div>
+<div class="card"><h2>予想順位</h2><div id="horses"></div></div>
+</section>
+
+<section id="line" class="hidden">
+<div class="card"><h2>隊列シミュレーション</h2><div class="muted">イベント表示なし。馬の位置だけを動かします。</div>
+<div id="track"></div><button onclick="run()">▶ 隊列を動かす</button></div>
+</section>
+
+<section id="ped" class="hidden">
+<div class="card"><h2>血統</h2><div id="pedigree"></div><div class="muted" style="margin-top:10px">血統情報は「確認済／要確認／不明」を分けて扱う設計です。</div></div>
+</section>
+
+<section id="verify" class="hidden">
+<div class="card"><h2>レース後検証</h2>
+<label>実際のペース</label><select id="actualPace"><option>H</option><option selected>M</option><option>S</option></select>
+<label style="display:block;margin-top:10px">実際の勝ち馬</label><input id="winner" placeholder="馬名">
+<button onclick="save()">検証結果を保存</button>
+<p id="saved" class="muted"></p>
+</div>
+</section>
+</main>
+<script>
+const horses=[
+{name:"サンプルホースA",style:"逃げ",gate:2,second:9,train:8,ped:"父：ロードカナロア / 母父：キングカメハメハ",mark:"◎",win:24},
+{name:"サンプルホースB",style:"先行",gate:5,second:8,train:9,ped:"父：ドレフォン / 母父：スペシャルウィーク",mark:"○",win:19},
+{name:"サンプルホースC",style:"差し",gate:7,second:6,train:9,ped:"父：ルーラーシップ / 母父：ステイゴールド",mark:"▲",win:15},
+{name:"サンプルホースD",style:"追込",gate:8,second:4,train:7,ped:"父：モーリス / 母父：Holy Roman Emperor",mark:"△",win:10},
+{name:"サンプルホースE",style:"先行",gate:3,second:7,train:7,ped:"父：キタサンブラック / 母父：クロフネ",mark:"△",win:9},
+{name:"サンプルホースF",style:"差し",gate:6,second:5,train:8,ped:"父：ドレフォン / 母父：ディープインパクト",mark:"☆",win:7}
+];
+function init(){for(let i=1;i<=12;i++)race.innerHTML+=`<option>${i}R</option>`;analyze()}
+function analyze(){
+ let front=horses.filter(h=>["逃げ","先行"].includes(h.style)).length;
+ let p=front>=3?"H":front<=1?"S":"M"; pace.textContent=p;
+ paceText.textContent=p==="H"?"前が多く、差し・追込有利を想定":p==="S"?"前が少なく、先行力を重視":"平均的。位置取りと総合力を重視";
+ horses.forEach(h=>h.score=h.second*2+h.train*1.5+(h.style==="先行"?2:h.style==="差し"?1:0));
+ horses.sort((a,b)=>b.score-a.score);
+ document.getElementById("horses").innerHTML=horses.map((h,i)=>`<div class="horse"><div class="num">${i+1}</div><div><b>${h.name}</b><div class="muted">${h.style}　想定勝率 ${h.win}%</div><div class="bar"><i style="width:${h.win*3.2}%"></i></div></div><div class="mark">${h.mark}</div></div>`).join("");
+ pedigree.innerHTML=horses.map(h=>`<div class="horse"><div class="num">●</div><div><b>${h.name}</b><div class="muted">${h.ped}</div></div><div class="muted">確認済</div></div>`).join("");
+ setupTrack();
+}
+function tab(id,el){document.querySelectorAll("section").forEach(x=>x.classList.add("hidden"));document.getElementById(id).classList.remove("hidden");document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));el.classList.add("active")}
+function setupTrack(){track.innerHTML="";for(let i=0;i<6;i++){let l=document.createElement("div");l.className="lane";l.style.top=(i+1)*38+"px";track.appendChild(l)}
+horses.forEach((h,i)=>{let r=document.createElement("div");r.className="runner";r.textContent=i+1;r.id="r"+i;r.style.left=(15+i*11)+"%";r.style.top=(15+(i%6)*38)+"px";track.appendChild(r)})}
+function run(){horses.forEach((h,i)=>{let r=document.getElementById("r"+i);r.style.left=(25+(i%3)*22)+"%";r.style.top=(25+((i*3)%6)*35)+"px";setTimeout(()=>{r.style.left=(75-(i%4)*10)+"%";r.style.top=(20+(i%6)*38)+"px"},900)})}
+function save(){let x={date:date.value,course:course.value,race:race.value,actualPace:actualPace.value,winner:winner.value,time:new Date().toISOString()};localStorage.setItem("keibaLabLast",JSON.stringify(x));saved.textContent="保存しました。次回もこの端末から確認できます。"}
+init();
+</script>
+</body>
+</html>
