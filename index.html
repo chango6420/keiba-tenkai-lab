@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>競馬展開ラボ v0.8</title>
+<title>競馬展開ラボ v0.9</title>
 
 <style>
 *{box-sizing:border-box}
@@ -22,7 +22,10 @@ header{
   border-bottom:1px solid #292e38;
 }
 
-h1{margin:0;font-size:22px}
+h1{
+  margin:0;
+  font-size:22px;
+}
 
 .badge{
   display:inline-block;
@@ -47,9 +50,15 @@ h1{margin:0;font-size:22px}
   margin-bottom:14px;
 }
 
-h2{margin:0 0 12px;font-size:18px}
+h2{
+  margin:0 0 12px;
+  font-size:18px;
+}
 
-h3{margin:14px 0 8px;font-size:15px}
+h3{
+  margin:14px 0 8px;
+  font-size:15px;
+}
 
 .grid{
   display:grid;
@@ -70,7 +79,9 @@ label{
   font-size:12px;
 }
 
-input,select,button{
+input,
+select,
+button{
   width:100%;
   border:1px solid #343b48;
   border-radius:8px;
@@ -86,10 +97,12 @@ button{
   font-weight:700;
 }
 
-button:active{opacity:.75}
+button:active{
+  opacity:.75;
+}
 
-button.secondary{
-  background:#292f3b;
+button:disabled{
+  opacity:.45;
 }
 
 .races{
@@ -156,10 +169,22 @@ button.secondary{
   font-size:11px;
 }
 
-.good{color:#55dc88}
-.warn{color:#ffd05a}
-.bad{color:#ff6b6b}
-.muted{color:#8d95a3;font-size:12px}
+.good{
+  color:#55dc88;
+}
+
+.warn{
+  color:#ffd05a;
+}
+
+.bad{
+  color:#ff6b6b;
+}
+
+.muted{
+  color:#8d95a3;
+  font-size:12px;
+}
 
 .progress{
   height:8px;
@@ -172,7 +197,45 @@ button.secondary{
 .progress div{
   height:100%;
   background:#2864e8;
-  width:0%;
+}
+
+.score-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:5px;
+  margin-top:9px;
+}
+
+.score-box{
+  background:#191e26;
+  border-radius:6px;
+  padding:7px 3px;
+  text-align:center;
+  font-size:11px;
+}
+
+.score-box strong{
+  display:block;
+  font-size:14px;
+  margin-top:3px;
+}
+
+.past-race{
+  background:#181d25;
+  border-radius:7px;
+  padding:8px;
+  margin-top:6px;
+  font-size:11px;
+}
+
+.detail{
+  margin-top:8px;
+}
+
+.detail summary{
+  color:#9fa7b4;
+  font-size:12px;
+  cursor:pointer;
 }
 </style>
 </head>
@@ -181,10 +244,12 @@ button.secondary{
 
 <header>
 <h1>競馬展開ラボ</h1>
-<span class="badge">v0.8 過去走・脚質解析</span>
+<span class="badge">v0.9 脚質解析強化版</span>
 </header>
 
 <div class="container">
+
+<!-- レース設定 -->
 
 <div class="card">
 
@@ -247,6 +312,8 @@ button.secondary{
 </div>
 
 
+<!-- レース選択 -->
+
 <div class="card">
 
 <h2>レース選択</h2>
@@ -260,6 +327,8 @@ button.secondary{
 </div>
 
 
+<!-- 状況 -->
+
 <div class="card">
 
 <h2>取得状況</h2>
@@ -270,6 +339,8 @@ JavaScript OK
 
 </div>
 
+
+<!-- 出馬表 -->
 
 <div class="card">
 
@@ -290,15 +361,19 @@ JavaScript OK
 </div>
 
 
+<!-- 脚質解析 -->
+
 <div class="card">
 
 <h2>脚質解析結果</h2>
 
-<div id="styleResult">
+<div id="styleSummary">
 <div class="muted">
 まだ解析していません。
 </div>
 </div>
+
+<div id="styleResult" style="margin-top:12px"></div>
 
 </div>
 
@@ -308,14 +383,7 @@ JavaScript OK
 <script>
 
 /* =====================================================
-   v0.8
-   現在出馬表取得
-   ↓
-   馬ページURL取得
-   ↓
-   過去走解析
-   ↓
-   脚質推定
+   競馬展開ラボ v0.9
 ===================================================== */
 
 let horses = [];
@@ -377,7 +445,7 @@ document
 
 
 /* =====================================================
-   Jina取得
+   Jina
 ===================================================== */
 
 async function jinaFetch(url){
@@ -510,13 +578,10 @@ area.appendChild(button);
 
 
 /* =====================================================
-   レース取得
+   レース選択
 ===================================================== */
 
-async function selectRace(
-id,
-button
-){
+async function selectRace(id,button){
 
 raceId=id;
 
@@ -553,6 +618,15 @@ throw new Error(
 }
 
 renderHorses();
+
+document
+.getElementById("styleSummary")
+.innerHTML =
+'<div class="muted">過去走を取得して解析してください。</div>';
+
+document
+.getElementById("styleResult")
+.innerHTML="";
 
 status(
 "出馬表取得成功\n"+
@@ -630,19 +704,12 @@ if(used.has(number)){
 continue;
 }
 
-
 const name =
 extractHorseName(line);
 
 if(!name){
 continue;
 }
-
-
-/*
-馬ページURLを保存する。
-これが今回の重要ポイント。
-*/
 
 const horseUrlMatch =
 line.match(
@@ -681,14 +748,16 @@ pastRaces:[],
 
 style:"判定中",
 
-styleScore:{
+styleConfidence:0,
+
+styleConsistency:0,
+
+styleScores:{
 escape:0,
 front:0,
 stalker:0,
 closer:0
-},
-
-styleConfidence:0
+}
 
 });
 
@@ -711,14 +780,14 @@ return result;
 
 function extractHorseName(line){
 
-let m =
+let match =
 line.match(
 /db\.netkeiba\.com\/horse\/\d+\s+"([^"]+)"/
 );
 
-if(m){
+if(match){
 
-return clean(m[1]);
+return clean(match[1]);
 
 }
 
@@ -745,7 +814,7 @@ return "";
 
 
 /* =====================================================
-   全馬解析
+   全頭解析
 ===================================================== */
 
 async function analyzeAllHorses(){
@@ -777,19 +846,20 @@ i<horses.length;
 i++
 ){
 
-const h=horses[i];
+const horse =
+horses[i];
 
 status(
 "過去走解析中...\n"+
 (i+1)+" / "+horses.length+
 "\n\n"+
-h.number+". "+
-h.name
+horse.number+". "+
+horse.name
 );
 
 try{
 
-if(!h.horseUrl){
+if(!horse.horseUrl){
 
 throw new Error(
 "馬ページURLなし"
@@ -799,64 +869,61 @@ throw new Error(
 
 const text =
 await jinaFetch(
-h.horseUrl
+horse.horseUrl
 );
 
-h.pastRaces =
+horse.pastRaces =
 parsePastRaces(text);
 
-h.styleData =
+const result =
 judgeRunningStyle(
-h.pastRaces
+horse.pastRaces
 );
 
-h.style =
-h.styleData.style;
+horse.style =
+result.style;
 
-h.styleConfidence =
-h.styleData.confidence;
+horse.styleConfidence =
+result.confidence;
 
-h.styleScore =
-h.styleData.score;
+horse.styleConsistency =
+result.consistency;
+
+horse.styleScores =
+result.scores;
 
 }catch(error){
 
 console.warn(
-h.name,
+horse.name,
 error
 );
 
-h.pastRaces=[];
+horse.pastRaces=[];
 
-h.styleData={
-style:"不明",
-confidence:0,
-score:{
+horse.style="不明";
+
+horse.styleConfidence=0;
+
+horse.styleConsistency=0;
+
+horse.styleScores={
 escape:0,
 front:0,
 stalker:0,
 closer:0
-}
 };
 
-h.style="不明";
-
 }
 
-
-/*
-サーバー側への負荷を考えて
-少し待つ。
-*/
+renderStyleResult();
 
 await sleep(250);
-
-renderStyleResult();
 
 }
 
 status(
-"過去走解析完了\n"+
+"脚質解析完了\n"+
 "解析頭数: "+horses.length
 );
 
@@ -890,19 +957,6 @@ text.split(/\r?\n/);
 
 const races=[];
 
-
-/*
-netkeibaの過去走表は
-馬ページ内に複数の表がある。
-
-今回はまず
-「通過順位」
-「着順」
-「距離」
-「日付」
-などを持つ行を候補にする。
-*/
-
 for(const line of lines){
 
 if(!line.includes("|")){
@@ -920,10 +974,11 @@ continue;
 
 
 /*
-通過順位らしき文字列を探す。
+通過順位候補を探す。
+
 例:
 1-1
-2-2
+2-3
 3-4-5
 8-7
 */
@@ -944,6 +999,10 @@ break;
 
 }
 
+if(!positionText){
+continue;
+}
+
 
 /*
 着順候補
@@ -953,7 +1012,7 @@ let finish=0;
 
 for(const cell of cells){
 
-const n=
+const n =
 Number(cell);
 
 if(
@@ -962,43 +1021,30 @@ n>=1 &&
 n<=18
 ){
 
-/*
-最初に現れる小さい数字を候補にする。
-*/
-
-if(!finish){
-
 finish=n;
 
-}
+break;
 
 }
 
-}
-
-
-if(!positionText){
-continue;
 }
 
 
 /*
-距離
+距離候補
 */
 
 let distance=0;
 
 for(const cell of cells){
 
-const m=
-cell.match(
-/(\d{3,4})/
-);
+const match =
+cell.match(/^(\d{3,4})$/);
 
-if(m){
+if(match){
 
-const d=
-Number(m[1]);
+const d =
+Number(match[1]);
 
 if(
 d>=1000 &&
@@ -1016,7 +1062,31 @@ break;
 }
 
 
+/*
+日付候補
+*/
+
+let date="";
+
+for(const cell of cells){
+
+if(
+/^\d{4}\.\d{1,2}\.\d{1,2}$/.test(cell) ||
+/^\d{4}\/\d{1,2}\/\d{1,2}$/.test(cell)
+){
+
+date=cell;
+
+break;
+
+}
+
+}
+
+
 races.push({
+
+date:date,
 
 finish:finish,
 
@@ -1030,25 +1100,159 @@ distance:distance
 
 
 /*
-同じ行が重複することがあるため
-最大10走まで。
+重複除去。
+
+同じ通過順位・着順の行が
+複数ある場合は1つにする。
 */
 
-return races
-.slice(0,10);
+const unique=[];
+
+const used=new Set();
+
+for(const race of races){
+
+const key =
+race.date+"|"+
+race.finish+"|"+
+race.position+"|"+
+race.distance;
+
+if(used.has(key)){
+continue;
+}
+
+used.add(key);
+
+unique.push(race);
+
+}
+
+
+/*
+最大10走。
+
+取得順は基本的に
+直近→過去を想定。
+*/
+
+return unique.slice(0,10);
 
 }
 
 
 /* =====================================================
-   脚質判定
+   1走ごとの脚質判定
+===================================================== */
+
+function judgeSingleRace(
+positionText
+){
+
+const nums =
+positionText
+.split("-")
+.map(Number)
+.filter(
+n=>Number.isFinite(n)
+);
+
+if(!nums.length){
+
+return null;
+
+}
+
+const first =
+nums[0];
+
+const second =
+nums.length>=2
+?nums[1]
+:first;
+
+let style="";
+
+if(first===1){
+
+style="逃げ";
+
+}else if(first<=3){
+
+style="先行";
+
+}else if(first<=6){
+
+style="差し";
+
+}else{
+
+style="追込";
+
+}
+
+
+/*
+道中で位置を上げたり
+下げたりしている場合の補正。
+
+例えば
+8-5-3
+なら差し寄り。
+
+*/
+
+const last =
+nums[nums.length-1];
+
+let adjustment=0;
+
+if(
+first>=7 &&
+last<=3
+){
+
+adjustment=1;
+
+}
+
+if(
+first<=3 &&
+last>=7
+){
+
+adjustment=-1;
+
+}
+
+return {
+
+style:style,
+
+first:first,
+
+second:second,
+
+last:last,
+
+adjustment:adjustment,
+
+positions:nums
+
+};
+
+}
+
+
+/* =====================================================
+   総合脚質判定
 ===================================================== */
 
 function judgeRunningStyle(
 pastRaces
 ){
 
-const score={
+const scores={
 escape:0,
 front:0,
 stalker:0,
@@ -1063,126 +1267,303 @@ style:"不明",
 
 confidence:0,
 
-score:score
+consistency:0,
+
+scores:scores
 
 };
 
 }
 
 
-pastRaces.forEach(function(race){
+/*
+直近のレースほど重くする。
 
-const nums =
+1走目 = 1.00
+2走目 = 0.90
+3走目 = 0.80
+...
+*/
+
+const raceResults=[];
+
+
+pastRaces.forEach(
+function(race,index){
+
+const result =
+judgeSingleRace(
 race.position
-.split("-")
-.map(Number)
-.filter(
-n=>Number.isFinite(n)
 );
 
-if(!nums.length){
+if(!result){
 return;
 }
 
 
 /*
-先頭通過順位。
+直近ほど重い。
 */
 
-const first =
-nums[0];
+const weight =
+Math.max(
+0.25,
+1-(index*0.10)
+);
 
 
 /*
-過去走の頭数は
-完全には取れないため、
-現段階では順位そのものを
-脚質判定に使う。
+基本点。
 */
 
+let points =
+10*weight;
 
-if(first===1){
 
-score.escape+=4;
+/*
+位置変化補正。
+*/
 
-}else if(first<=3){
+points +=
+result.adjustment*2;
 
-score.front+=4;
 
-}else if(first<=6){
+/*
+脚質ごとに加点。
+*/
 
-score.stalker+=4;
+if(result.style==="逃げ"){
 
-}else{
+scores.escape += points;
 
-score.closer+=4;
+}else if(result.style==="先行"){
+
+scores.front += points;
+
+}else if(result.style==="差し"){
+
+scores.stalker += points;
+
+}else if(result.style==="追込"){
+
+scores.closer += points;
 
 }
 
 
 /*
-2つ目以降も見る。
-
-道中ずっと前なら前受け能力を加点。
+個別レース結果を保存。
 */
 
-if(nums.length>=2){
+raceResults.push({
 
-const second=nums[1];
+style:result.style,
 
-if(second===1){
+weight:weight,
 
-score.escape+=2;
+first:result.first,
 
-}else if(second<=3){
+second:result.second,
 
-score.front+=2;
+last:result.last,
 
-}else if(second<=6){
+distance:race.distance,
 
-score.stalker+=2;
+finish:race.finish
 
-}else{
-
-score.closer+=2;
+});
 
 }
+);
+
+
+/*
+結果が無ければ不明。
+*/
+
+const total =
+Object.values(scores)
+.reduce(
+(a,b)=>a+b,
+0
+);
+
+if(!total){
+
+return {
+
+style:"不明",
+
+confidence:0,
+
+consistency:0,
+
+scores:scores
+
+};
+
+}
+
+
+/*
+ランキング。
+*/
+
+const ranking=[
+["逃げ",scores.escape],
+["先行",scores.front],
+["差し",scores.stalker],
+["追込",scores.closer]
+];
+
+ranking.sort(
+(a,b)=>b[1]-a[1]
+);
+
+const top =
+ranking[0];
+
+const second =
+ranking[1];
+
+
+/*
+--------------------------------
+① 脚質優位度
+--------------------------------
+*/
+
+const dominance =
+(top[1]/total)*100;
+
+
+/*
+--------------------------------
+② 脚質差
+--------------------------------
+*/
+
+const separation =
+((top[1]-second[1])/total)*100;
+
+
+/*
+--------------------------------
+③ 一貫性
+--------------------------------
+
+同じ脚質が何回出ているか。
+*/
+
+const topStyle =
+top[0];
+
+let sameCount=0;
+
+raceResults.forEach(
+function(r){
+
+if(r.style===topStyle){
+
+sameCount++;
 
 }
 
 });
 
 
-const entries=[
-["逃げ",score.escape],
-["先行",score.front],
-["差し",score.stalker],
-["追込",score.closer]
-];
+const consistency =
+raceResults.length
+?
+sameCount/raceResults.length*100
+:0;
 
-entries.sort(
-(a,b)=>b[1]-a[1]
-);
 
-const top=entries[0];
-const second=entries[1];
+/*
+--------------------------------
+④ 直近3走の一致
+--------------------------------
+*/
 
-const total=
-Object.values(score)
-.reduce(
-(a,b)=>a+b,
-0
-);
+const recent =
+raceResults.slice(0,3);
 
-let confidence=0;
+let recentSame=0;
 
-if(total>0){
+recent.forEach(
+function(r){
+
+if(r.style===topStyle){
+
+recentSame++;
+
+}
+
+});
+
+
+const recentConsistency =
+recent.length
+?
+recentSame/recent.length*100
+:0;
+
+
+/*
+--------------------------------
+⑤ 最終信頼度
+--------------------------------
+
+単純な差だけではなく
+
+・脚質の優位性
+・他脚質との差
+・過去走の一貫性
+・直近の一貫性
+
+を合わせる。
+*/
+
+let confidence =
+dominance*0.30+
+separation*0.30+
+consistency*0.20+
+recentConsistency*0.20;
+
+
+/*
+サンプル数が少ない場合は
+信頼度を制限。
+
+1走だけで100%などにはしない。
+*/
+
+if(raceResults.length===1){
 
 confidence =
-(top[1]-second[1])
-/
-total
-*100;
+Math.min(
+confidence,
+45
+);
+
+}else if(raceResults.length===2){
+
+confidence =
+Math.min(
+confidence,
+65
+);
+
+}else if(raceResults.length===3){
+
+confidence =
+Math.min(
+confidence,
+78
+);
+
+}
+
 
 confidence =
 Math.max(
@@ -1193,16 +1574,24 @@ confidence
 )
 );
 
-}
-
 
 return {
 
-style:top[0],
+style:topStyle,
 
 confidence:confidence,
 
-score:score
+consistency:consistency,
+
+scores:scores,
+
+raceResults:raceResults,
+
+dominance:dominance,
+
+separation:separation,
+
+recentConsistency:recentConsistency
 
 };
 
@@ -1210,7 +1599,7 @@ score:score
 
 
 /* =====================================================
-   表示
+   出馬表表示
 ===================================================== */
 
 function renderHorses(){
@@ -1220,7 +1609,8 @@ document.getElementById("horseList");
 
 let html="";
 
-horses.forEach(function(h){
+horses.forEach(
+function(h){
 
 html+=`
 
@@ -1263,9 +1653,11 @@ ${escapeHtml(h.weight)}
 ${escapeHtml(h.jockey)}
 
 /
-${h.popularity
+${
+h.popularity
 ?h.popularity+"人気"
-:"--"}
+:"--"
+}
 
 </div>
 
@@ -1290,25 +1682,193 @@ area.innerHTML=html;
 
 
 /* =====================================================
-   脚質結果
+   脚質結果表示
 ===================================================== */
 
 function renderStyleResult(){
 
+const summary =
+document.getElementById("styleSummary");
+
 const area =
 document.getElementById("styleResult");
 
+
+if(!horses.length){
+
+summary.innerHTML =
+'<div class="muted">データなし</div>';
+
+area.innerHTML="";
+
+return;
+
+}
+
+
+/*
+全体の脚質分布。
+*/
+
+const count={
+"逃げ":0,
+"先行":0,
+"差し":0,
+"追込":0,
+"不明":0
+};
+
+horses.forEach(
+function(h){
+
+if(count[h.style]!==undefined){
+
+count[h.style]++;
+
+}else{
+
+count["不明"]++;
+
+}
+
+});
+
+
+summary.innerHTML=`
+
+<div class="result-box">
+
+<div class="meta">
+脚質分布
+</div>
+
+<div class="score-grid">
+
+<div class="score-box">
+逃げ
+<strong>
+${count["逃げ"]}
+</strong>
+</div>
+
+<div class="score-box">
+先行
+<strong>
+${count["先行"]}
+</strong>
+</div>
+
+<div class="score-box">
+差し
+<strong>
+${count["差し"]}
+</strong>
+</div>
+
+<div class="score-box">
+追込
+<strong>
+${count["追込"]}
+</strong>
+</div>
+
+</div>
+
+</div>
+
+`;
+
+
 let html="";
 
-horses.forEach(function(h){
 
-const data =
-h.styleData;
+horses.forEach(
+function(h){
 
 const confidence =
-data
-?data.confidence
-:0;
+h.styleConfidence||0;
+
+const scores =
+h.styleScores||{
+escape:0,
+front:0,
+stalker:0,
+closer:0
+};
+
+let confidenceClass =
+"bad";
+
+if(confidence>=70){
+
+confidenceClass="good";
+
+}else if(confidence>=45){
+
+confidenceClass="warn";
+
+}
+
+
+/*
+過去走詳細
+*/
+
+let pastHtml="";
+
+if(h.pastRaces.length){
+
+h.pastRaces.forEach(
+function(race,index){
+
+const result =
+judgeSingleRace(
+race.position
+);
+
+pastHtml+=`
+
+<div class="past-race">
+
+<strong>
+${index+1}走前
+</strong>
+
+&nbsp;
+
+脚質:
+${
+result
+?result.style
+:"--"
+}
+
+<br>
+
+通過:
+${escapeHtml(race.position)}
+
+/
+着順:
+${race.finish||"--"}
+
+/
+距離:
+${race.distance||"--"}
+
+</div>
+
+`;
+
+});
+
+}else{
+
+pastHtml =
+'<div class="muted">過去走データなし</div>';
+
+}
+
 
 html+=`
 
@@ -1324,12 +1884,11 @@ ${escapeHtml(h.name)}
 </div>
 
 <div class="tag">
-
 ${h.style}
-
 </div>
 
 </div>
+
 
 <div class="meta">
 
@@ -1337,10 +1896,13 @@ ${h.style}
 ${h.pastRaces.length}走
 
 /
-判定信頼度:
+<span class="${confidenceClass}">
+脚質信頼度:
 ${confidence.toFixed(0)}%
+</span>
 
 </div>
+
 
 <div class="progress">
 
@@ -1350,30 +1912,56 @@ width:${confidence}%;
 
 </div>
 
-<div class="meta">
 
-逃げ:
-${data?data.score.escape:0}
+<div class="score-grid">
 
-/
-先行:
-${data?data.score.front:0}
+<div class="score-box">
+逃げ
+<strong>
+${scores.escape.toFixed(1)}
+</strong>
+</div>
 
-/
-差し:
-${data?data.score.stalker:0}
+<div class="score-box">
+先行
+<strong>
+${scores.front.toFixed(1)}
+</strong>
+</div>
 
-/
-追込:
-${data?data.score.closer:0}
+<div class="score-box">
+差し
+<strong>
+${scores.stalker.toFixed(1)}
+</strong>
+</div>
+
+<div class="score-box">
+追込
+<strong>
+${scores.closer.toFixed(1)}
+</strong>
+</div>
 
 </div>
+
+
+<details class="detail">
+
+<summary>
+過去走の判定を見る
+</summary>
+
+${pastHtml}
+
+</details>
 
 </div>
 
 `;
 
 });
+
 
 area.innerHTML=html;
 
@@ -1408,6 +1996,10 @@ return String(value||"")
 .replace(
 /&amp;/g,
 "&"
+)
+.replace(
+/&quot;/g,
+'"'
 )
 .replace(
 /\s+/g,
